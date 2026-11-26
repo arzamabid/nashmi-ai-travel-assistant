@@ -12,6 +12,10 @@ NASHMI is a conversational travel-booking MVP that helps users search **flights,
 
 ---
 
+<img width="1672" height="941" alt="Nashmi AI Travel Assistant Infographic" src="https://github.com/user-attachments/assets/d3cd2064-dd12-443c-a46b-77b405af67b7" />
+
+
+
 ## Overview
 
 NASHMI demonstrates how an LLM-powered interface can support a stateful business workflow **without letting the LLM make authoritative reservation decisions**.
