@@ -372,3 +372,32 @@ NASHMI is designed to illustrate the differences between **conversational intell
 ## Disclaimer
 
 NASHMI is a software engineering and AI portfolio project for demonstration and learning. Local inventory and confirmations do not represent purchases, tickets, hotel stays or restaurant reservations with external providers. No payment collection or travel fulfillment is implied.
+
+<!-- NASHMI_PERFORMANCE_START -->
+## Measured local performance
+
+NASHMI was benchmarked on **26 November 2026** using the existing bilingual golden search evaluation suite. **All 50/50 scenarios passed** across **81 HTTP `/chat` requests**. The benchmark ran against a locally hosted FastAPI application instrumented for LangGraph, Ollama and SQL cursor timings.
+
+| Component | Samples | Mean | Median | P95 |
+|---|---:|---:|---:|---:|
+| End-to-end `/chat` server processing | 81 | 1,204.1 ms | 1,096.4 ms | 1,837.4 ms |
+| LangGraph invocation | 81 | 1,201.8 ms | 1,094.3 ms | 1,835.5 ms |
+| Intent classification node | 81 | 0.0 ms | 0.0 ms | 0.0 ms |
+| Ollama LLM call | 81 | 1,188.0 ms | 1,085.9 ms | 1,788.0 ms |
+| SQL cursor execution (per query) | 143 | 2.3 ms | 1.7 ms | 6.2 ms |
+
+**Service-level node breakdown**
+
+| LangGraph node | Samples | Mean | Median | P95 |
+|---|---:|---:|---:|---:|
+| Flight parameter extraction | 40 | 1,040.7 ms | 997.7 ms | 1,384.9 ms |
+| Hotel parameter extraction | 18 | 1,415.8 ms | 1,256.0 ms | 1,968.7 ms |
+| Restaurant parameter extraction | 23 | 1,266.1 ms | 1,139.3 ms | 1,788.4 ms |
+| Flight search | 6 | 12.1 ms | 9.8 ms | 25.0 ms |
+| Hotel search | 6 | 10.2 ms | 8.9 ms | 16.2 ms |
+| Restaurant search | 8 | 9.3 ms | 7.6 ms | 16.5 ms |
+
+**Interpretation:** In this local test, Ollama model inference dominated measured request latency. The near-zero intent-classification measurement represents the measured classifier node, not a separate model benchmark. SQL duration measures cursor execution only, excluding connection acquisition and some SQLAlchemy ORM work.
+
+**Methodology and limitations:** Tests used the existing read-only golden *search* scenarios, including multi-turn English and Arabic conversations. This is not an independent 81-scenario test; **50 scenarios generated 81 HTTP requests**. Server-side `/chat` processing excludes client/network latency. Timings for HTTP, graph, nodes, LLM and SQL overlap and **must not be added together**. P95 values describe this particular local run and are not production SLOs. Booking confirmations, payment, cancellation and concurrent load are outside the scope of this performance run. Full local results are generated at `evals/performance_report.json` and `evals/performance_table.md`.
+<!-- NASHMI_PERFORMANCE_END -->
