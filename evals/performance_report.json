@@ -1,70 +1,118 @@
 {
-  "scenario_count": 2,
-  "passed": 2,
-  "requests": 4,
+  "scenario_count": 50,
+  "passed": 50,
+  "requests": 81,
   "client_http_ms": {
-    "samples": 4,
-    "mean_ms": 1663.8,
-    "median_ms": 1287.3,
-    "p95_ms": 3086.7
+    "samples": 81,
+    "mean_ms": 1207.9,
+    "median_ms": 1100.8,
+    "p95_ms": 1840.9
   },
   "components": {
     "http.chat": {
-      "samples": 4,
-      "mean_ms": 1654.8,
-      "median_ms": 1282.3,
-      "p95_ms": 3066.5
+      "samples": 81,
+      "mean_ms": 1204.1,
+      "median_ms": 1096.4,
+      "p95_ms": 1837.4
     },
     "langgraph.invoke": {
-      "samples": 4,
-      "mean_ms": 1651.6,
-      "median_ms": 1280.2,
-      "p95_ms": 3060.2
+      "samples": 81,
+      "mean_ms": 1201.8,
+      "median_ms": 1094.3,
+      "p95_ms": 1835.5
     },
     "node.classify_intent": {
-      "samples": 4,
+      "samples": 81,
       "mean_ms": 0.0,
       "median_ms": 0.0,
-      "p95_ms": 0.1
+      "p95_ms": 0.0
     },
     "ollama.chat": {
-      "samples": 4,
-      "mean_ms": 1594.6,
-      "median_ms": 1172.9,
-      "p95_ms": 3052.1
+      "samples": 81,
+      "mean_ms": 1188.0,
+      "median_ms": 1085.9,
+      "p95_ms": 1788.0
     },
     "sql.execute": {
-      "samples": 7,
-      "mean_ms": 4.5,
-      "median_ms": 3.4,
-      "p95_ms": 12.4
+      "samples": 143,
+      "mean_ms": 2.3,
+      "median_ms": 1.7,
+      "p95_ms": 6.2
     },
     "node.ask_flight_follow_up": {
-      "samples": 3,
+      "samples": 34,
+      "mean_ms": 0.0,
+      "median_ms": 0.0,
+      "p95_ms": 0.0
+    },
+    "node.ask_hotel_follow_up": {
+      "samples": 12,
+      "mean_ms": 0.0,
+      "median_ms": 0.0,
+      "p95_ms": 0.0
+    },
+    "node.ask_restaurant_follow_up": {
+      "samples": 15,
       "mean_ms": 0.0,
       "median_ms": 0.0,
       "p95_ms": 0.0
     },
     "node.extract_flight": {
-      "samples": 4,
-      "mean_ms": 1595.0,
-      "median_ms": 1173.2,
-      "p95_ms": 3052.9
+      "samples": 40,
+      "mean_ms": 1040.7,
+      "median_ms": 997.7,
+      "p95_ms": 1384.9
+    },
+    "node.extract_hotel": {
+      "samples": 18,
+      "mean_ms": 1415.8,
+      "median_ms": 1256.0,
+      "p95_ms": 1968.7
+    },
+    "node.extract_restaurant": {
+      "samples": 23,
+      "mean_ms": 1266.1,
+      "median_ms": 1139.3,
+      "p95_ms": 1788.4
     },
     "node.flight": {
-      "samples": 1,
-      "mean_ms": 176.1,
-      "median_ms": 176.1,
-      "p95_ms": 176.1
+      "samples": 6,
+      "mean_ms": 12.1,
+      "median_ms": 9.8,
+      "p95_ms": 25.0
     },
     "node.flight_availability": {
-      "samples": 1,
-      "mean_ms": 23.8,
-      "median_ms": 23.8,
-      "p95_ms": 23.8
+      "samples": 6,
+      "mean_ms": 12.9,
+      "median_ms": 13.6,
+      "p95_ms": 21.8
+    },
+    "node.hotel": {
+      "samples": 6,
+      "mean_ms": 10.2,
+      "median_ms": 8.9,
+      "p95_ms": 16.2
+    },
+    "node.hotel_availability": {
+      "samples": 6,
+      "mean_ms": 22.5,
+      "median_ms": 20.0,
+      "p95_ms": 42.5
+    },
+    "node.restaurant": {
+      "samples": 8,
+      "mean_ms": 9.3,
+      "median_ms": 7.6,
+      "p95_ms": 16.5
+    },
+    "node.restaurant_availability": {
+      "samples": 8,
+      "mean_ms": 18.8,
+      "median_ms": 17.7,
+      "p95_ms": 28.6
     },
     "node.start_session": {
-      "samples": 4,
+      "samples": 81,
       "mean_ms": 0.0,
       "median_ms": 0.0,
       "p95_ms": 0.0
