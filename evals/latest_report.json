@@ -1,0 +1,1792 @@
+{
+  "summary": {
+    "scenarios": 50,
+    "passed": 50,
+    "scenario_success_pct": 100.0,
+    "state_accuracy_pct": 100.0,
+    "field_accuracy_pct": 100.0,
+    "errors": 0,
+    "latency_p50_ms": 1684.8,
+    "latency_p95_ms": 3631.5,
+    "by_language": {
+      "ar": {
+        "passed": 13,
+        "total": 13,
+        "success_pct": 100.0
+      },
+      "en": {
+        "passed": 37,
+        "total": 37,
+        "success_pct": 100.0
+      }
+    },
+    "by_category": {
+      "arabic_context": {
+        "passed": 4,
+        "total": 4,
+        "success_pct": 100.0
+      },
+      "arabic_flight": {
+        "passed": 2,
+        "total": 2,
+        "success_pct": 100.0
+      },
+      "arabic_hotel": {
+        "passed": 1,
+        "total": 1,
+        "success_pct": 100.0
+      },
+      "arabic_restaurant": {
+        "passed": 1,
+        "total": 1,
+        "success_pct": 100.0
+      },
+      "arabic_robustness": {
+        "passed": 5,
+        "total": 5,
+        "success_pct": 100.0
+      },
+      "context_recovery": {
+        "passed": 6,
+        "total": 6,
+        "success_pct": 100.0
+      },
+      "context_switch": {
+        "passed": 5,
+        "total": 5,
+        "success_pct": 100.0
+      },
+      "date_robustness": {
+        "passed": 3,
+        "total": 3,
+        "success_pct": 100.0
+      },
+      "flight_context": {
+        "passed": 4,
+        "total": 4,
+        "success_pct": 100.0
+      },
+      "flight_extraction": {
+        "passed": 4,
+        "total": 4,
+        "success_pct": 100.0
+      },
+      "hotel_extraction": {
+        "passed": 4,
+        "total": 4,
+        "success_pct": 100.0
+      },
+      "missing_details": {
+        "passed": 4,
+        "total": 4,
+        "success_pct": 100.0
+      },
+      "quantity_robustness": {
+        "passed": 1,
+        "total": 1,
+        "success_pct": 100.0
+      },
+      "restaurant_extraction": {
+        "passed": 4,
+        "total": 4,
+        "success_pct": 100.0
+      },
+      "short_followups": {
+        "passed": 1,
+        "total": 1,
+        "success_pct": 100.0
+      },
+      "time_robustness": {
+        "passed": 1,
+        "total": 1,
+        "success_pct": 100.0
+      }
+    },
+    "failures_by_category": {}
+  },
+  "results": [
+    {
+      "id": "EN_FLIGHT_MULTITURN",
+      "category": "flight_context",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 5657.4,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "status",
+          "expected": "awaiting_flight_details",
+          "actual": "awaiting_flight_details",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_FLIGHT_DIRECT",
+      "category": "flight_extraction",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1453.6,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "status",
+          "expected": "flight_availability_checked",
+          "actual": "flight_availability_checked",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.departure_date",
+          "expected": "2026-12-20",
+          "actual": "2026-12-20",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.passengers",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_HOTEL_DIRECT",
+      "category": "hotel_extraction",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1802.0,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "status",
+          "expected": "hotel_availability_checked",
+          "actual": "hotel_availability_checked",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.destination",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.check_in_date",
+          "expected": "2026-12-10",
+          "actual": "2026-12-10",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.check_out_date",
+          "expected": "2026-12-12",
+          "actual": "2026-12-12",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.guests",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.rooms",
+          "expected": 1,
+          "actual": 1,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_RESTAURANT_DIRECT",
+      "category": "restaurant_extraction",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1694.0,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "status",
+          "expected": "restaurant_availability_checked",
+          "actual": "restaurant_availability_checked",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.date",
+          "expected": "2026-12-10",
+          "actual": "2026-12-10",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.time",
+          "expected": "18:00",
+          "actual": "18:00",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.party_size",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_SERVICE_SWITCH",
+      "category": "context_switch",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1950.8,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "status",
+          "expected": "awaiting_flight_details",
+          "actual": "awaiting_flight_details",
+          "passed": true,
+          "kind": "state"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_FLIGHT_ROUTE_SHORT",
+      "category": "flight_context",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 2708.3,
+      "checks": [
+        {
+          "name": "turn_1.intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "turn_1.status",
+          "expected": "awaiting_flight_details",
+          "actual": "awaiting_flight_details",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "turn_2.intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "turn_2.flight_request.origin",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_FLIGHT_ORIGIN_MISSING",
+      "category": "missing_details",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1811.4,
+      "checks": [
+        {
+          "name": "turn_1.intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "turn_1.status",
+          "expected": "awaiting_flight_details",
+          "actual": "awaiting_flight_details",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Dammam",
+          "actual": "Dammam",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_FLIGHT_ROUTE_IN_ONE",
+      "category": "flight_extraction",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 994.3,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_FLIGHT_TWO_PASSENGERS",
+      "category": "flight_extraction",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1270.2,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "status",
+          "expected": "flight_availability_checked",
+          "actual": "flight_availability_checked",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.passengers",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_FLIGHT_FOUR_PASSENGERS",
+      "category": "flight_extraction",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1221.1,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.passengers",
+          "expected": 4,
+          "actual": 4,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_FLIGHT_DATE_AFTER_ROUTE",
+      "category": "flight_context",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 3805.4,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.departure_date",
+          "expected": "2026-12-20",
+          "actual": "2026-12-20",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_FLIGHT_PASSENGERS_FOLLOWUP",
+      "category": "flight_context",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 3631.5,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.passengers",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_HOTEL_CITY_ONLY",
+      "category": "missing_details",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1130.0,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.destination",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_HOTEL_FOUR_GUESTS",
+      "category": "hotel_extraction",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1675.7,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "status",
+          "expected": "hotel_availability_checked",
+          "actual": "hotel_availability_checked",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.guests",
+          "expected": 4,
+          "actual": 4,
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.rooms",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_HOTEL_DAMMAM",
+      "category": "hotel_extraction",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1646.9,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.destination",
+          "expected": "Dammam",
+          "actual": "Dammam",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.check_in_date",
+          "expected": "2026-12-10",
+          "actual": "2026-12-10",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.check_out_date",
+          "expected": "2026-12-18",
+          "actual": "2026-12-18",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.guests",
+          "expected": 4,
+          "actual": 4,
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.rooms",
+          "expected": 1,
+          "actual": 1,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_HOTEL_SHORT_DATES",
+      "category": "hotel_extraction",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1640.3,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.check_in_date",
+          "expected": "2026-12-19",
+          "actual": "2026-12-19",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.check_out_date",
+          "expected": "2026-12-27",
+          "actual": "2026-12-27",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_RESTAURANT_CITY_ONLY",
+      "category": "missing_details",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1055.7,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_RESTAURANT_JEDDAH",
+      "category": "restaurant_extraction",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1489.7,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.date",
+          "expected": "2026-12-10",
+          "actual": "2026-12-10",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.time",
+          "expected": "18:00",
+          "actual": "18:00",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.party_size",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_RESTAURANT_KHOBAR",
+      "category": "restaurant_extraction",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1430.0,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Al Khobar",
+          "actual": "Al Khobar",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.party_size",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_RESTAURANT_SIX",
+      "category": "restaurant_extraction",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1432.4,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.party_size",
+          "expected": 6,
+          "actual": 6,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_RESTAURANT_MISSING_DATE",
+      "category": "missing_details",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 2052.5,
+      "checks": [
+        {
+          "name": "turn_1.intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "turn_1.status",
+          "expected": "awaiting_restaurant_details",
+          "actual": "awaiting_restaurant_details",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_SWITCH_FLIGHT_RESTAURANT",
+      "category": "context_switch",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 2080.9,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_SWITCH_HOTEL_FLIGHT",
+      "category": "context_switch",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1998.3,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "status",
+          "expected": "awaiting_flight_details",
+          "actual": "awaiting_flight_details",
+          "passed": true,
+          "kind": "state"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_SWITCH_FLIGHT_HOTEL",
+      "category": "context_switch",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1935.0,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.destination",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "EN_SWITCH_RESTAURANT_HOTEL",
+      "category": "context_switch",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 2153.0,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.destination",
+          "expected": "Dammam",
+          "actual": "Dammam",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "AR_FLIGHT_DIRECT",
+      "category": "arabic_flight",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 1283.1,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.departure_date",
+          "expected": "2026-12-20",
+          "actual": "2026-12-20",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.passengers",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "AR_FLIGHT_ROUTE",
+      "category": "arabic_flight",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 957.6,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "AR_HOTEL_DIRECT",
+      "category": "arabic_hotel",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 1649.6,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.destination",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.check_in_date",
+          "expected": "2026-12-10",
+          "actual": "2026-12-10",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.check_out_date",
+          "expected": "2026-12-12",
+          "actual": "2026-12-12",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.guests",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.rooms",
+          "expected": 1,
+          "actual": 1,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "AR_RESTAURANT_DIRECT",
+      "category": "arabic_restaurant",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 1469.7,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.date",
+          "expected": "2026-12-10",
+          "actual": "2026-12-10",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.time",
+          "expected": "18:00",
+          "actual": "18:00",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.party_size",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "AR_SERVICE_SWITCH",
+      "category": "arabic_context",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 2021.7,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_EN_FLIGHT_RESTART_ROUTE",
+      "category": "context_recovery",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1993.1,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Dammam",
+          "actual": "Dammam",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_EN_FLIGHT_SHORT_DEST",
+      "category": "short_followups",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 2727.3,
+      "checks": [
+        {
+          "name": "turn_2.flight_request.origin",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_EN_FLIGHT_SWITCH_REOPEN",
+      "category": "context_recovery",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 3069.3,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Dammam",
+          "actual": "Dammam",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_EN_HOTEL_NEW_CITY",
+      "category": "context_recovery",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 2229.5,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.destination",
+          "expected": "Dammam",
+          "actual": "Dammam",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_EN_HOTEL_REOPEN_AFTER_FLIGHT",
+      "category": "context_recovery",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 3302.1,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.destination",
+          "expected": "Dammam",
+          "actual": "Dammam",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_EN_RESTAURANT_NEW_CITY",
+      "category": "context_recovery",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 2166.0,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_EN_RESTAURANT_CITY_KHOBAR",
+      "category": "context_recovery",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 2152.9,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Al Khobar",
+          "actual": "Al Khobar",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_EN_FLIGHT_DIRECT_DEC_21",
+      "category": "date_robustness",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1277.2,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.departure_date",
+          "expected": "2026-12-21",
+          "actual": "2026-12-21",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.passengers",
+          "expected": 1,
+          "actual": 1,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_EN_FLIGHT_DIRECT_DEC_20",
+      "category": "date_robustness",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1239.6,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.departure_date",
+          "expected": "2026-12-20",
+          "actual": "2026-12-20",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.passengers",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_EN_HOTEL_DAY_BOUNDARY",
+      "category": "date_robustness",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1693.9,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.check_in_date",
+          "expected": "2026-12-30",
+          "actual": "2026-12-30",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "hotel_request.check_out_date",
+          "expected": "2027-01-02",
+          "actual": "2027-01-02",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_EN_RESTAURANT_24H",
+      "category": "time_robustness",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1451.7,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.date",
+          "expected": "2026-12-12",
+          "actual": "2026-12-12",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.time",
+          "expected": "20:00",
+          "actual": "20:00",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.party_size",
+          "expected": 4,
+          "actual": 4,
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_EN_RESTAURANT_TWO_PEOPLE",
+      "category": "quantity_robustness",
+      "language": "en",
+      "passed": true,
+      "latency_ms": 1439.4,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.party_size",
+          "expected": 2,
+          "actual": 2,
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_AR_HOTEL_RIYADH_CITY",
+      "category": "arabic_robustness",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 1131.3,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.destination",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_AR_HOTEL_DAMMAM_CITY",
+      "category": "arabic_robustness",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 1122.6,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.destination",
+          "expected": "Dammam",
+          "actual": "Dammam",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_AR_FLIGHT_JEDDAH_ROUTE",
+      "category": "arabic_robustness",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 1006.6,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_AR_RESTAURANT_JEDDAH",
+      "category": "arabic_robustness",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 1102.6,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_AR_RESTAURANT_PARTY_4",
+      "category": "arabic_robustness",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 1495.9,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.party_size",
+          "expected": 4,
+          "actual": 4,
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_AR_SWITCH_HOTEL_RESTAURANT",
+      "category": "arabic_context",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 2143.1,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "restaurant_search",
+          "actual": "restaurant_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "restaurant_request.city",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_AR_SWITCH_FLIGHT_HOTEL",
+      "category": "arabic_context",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 2115.3,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "hotel_search",
+          "actual": "hotel_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "hotel_request.destination",
+          "expected": "Dammam",
+          "actual": "Dammam",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "V3_AR_SWITCH_RESTAURANT_FLIGHT",
+      "category": "arabic_context",
+      "language": "ar",
+      "passed": true,
+      "latency_ms": 2065.7,
+      "checks": [
+        {
+          "name": "intent",
+          "expected": "flight_search",
+          "actual": "flight_search",
+          "passed": true,
+          "kind": "state"
+        },
+        {
+          "name": "flight_request.origin",
+          "expected": "Jeddah",
+          "actual": "Jeddah",
+          "passed": true,
+          "kind": "field"
+        },
+        {
+          "name": "flight_request.destination",
+          "expected": "Riyadh",
+          "actual": "Riyadh",
+          "passed": true,
+          "kind": "field"
+        }
+      ],
+      "error": null
+    }
+  ]
+}

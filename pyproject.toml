@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nashmi"
+version = "0.1.0"
+description = "Saudi bilingual AI booking and multi-agent travel assistant"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic",
+    "langgraph",
+    "langchain",
+    "sqlalchemy",
+    "psycopg[binary]",
+    "python-dotenv",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+]
+
+
+[tool.setuptools.packages.find]
+include = [
+    "agent*",
+    "apps*",
+    "tools*",
+    "rag*",
+    "db*",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "integration: tests that use a real database or external service",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

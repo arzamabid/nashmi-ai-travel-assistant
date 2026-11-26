@@ -1,0 +1,35 @@
+# Python environments
+.venv/
+venv/
+env/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+
+# Credentials and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# IDE and macOS
+.idea/
+.vscode/
+.DS_Store
+
+# Local databases
+*.db
+*.sqlite3
+
+# Build artifacts
+build/
+dist/
+
+# Logs
+*.log

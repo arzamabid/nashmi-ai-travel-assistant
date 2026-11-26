@@ -1,0 +1,821 @@
+[
+  {
+    "id": "EN_FLIGHT_MULTITURN",
+    "category": "flight_context",
+    "language": "en",
+    "turns": [
+      "Find a flight",
+      "Riyadh",
+      "Jeddah"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "status": "awaiting_flight_details",
+      "fields": {
+        "flight_request.origin": "Riyadh",
+        "flight_request.destination": "Jeddah"
+      }
+    }
+  },
+  {
+    "id": "EN_FLIGHT_DIRECT",
+    "category": "flight_extraction",
+    "language": "en",
+    "turns": [
+      "Find flights from Riyadh to Jeddah on 2026-12-20 for 2 passengers"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "status": "flight_availability_checked",
+      "fields": {
+        "flight_request.origin": "Riyadh",
+        "flight_request.destination": "Jeddah",
+        "flight_request.departure_date": "2026-12-20",
+        "flight_request.passengers": 2
+      }
+    }
+  },
+  {
+    "id": "EN_HOTEL_DIRECT",
+    "category": "hotel_extraction",
+    "language": "en",
+    "turns": [
+      "Find hotels in Riyadh, check-in 2026-12-10, check-out 2026-12-12, 2 guests, 1 room"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "status": "hotel_availability_checked",
+      "fields": {
+        "hotel_request.destination": "Riyadh",
+        "hotel_request.check_in_date": "2026-12-10",
+        "hotel_request.check_out_date": "2026-12-12",
+        "hotel_request.guests": 2,
+        "hotel_request.rooms": 1
+      }
+    }
+  },
+  {
+    "id": "EN_RESTAURANT_DIRECT",
+    "category": "restaurant_extraction",
+    "language": "en",
+    "turns": [
+      "Find restaurants in Riyadh on 2026-12-10 at 18:00 for 2 people"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "status": "restaurant_availability_checked",
+      "fields": {
+        "restaurant_request.city": "Riyadh",
+        "restaurant_request.date": "2026-12-10",
+        "restaurant_request.time": "18:00",
+        "restaurant_request.party_size": 2
+      }
+    }
+  },
+  {
+    "id": "EN_SERVICE_SWITCH",
+    "category": "context_switch",
+    "language": "en",
+    "turns": [
+      "Find a restaurant in Riyadh",
+      "Find a flight"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "status": "awaiting_flight_details",
+      "fields": {}
+    }
+  },
+  {
+    "id": "EN_FLIGHT_ROUTE_SHORT",
+    "category": "flight_context",
+    "language": "en",
+    "turns": [
+      "Find a flight",
+      "Riyadh",
+      "Jeddah"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Riyadh",
+        "flight_request.destination": "Jeddah"
+      }
+    },
+    "step_checks": {
+      "0": {
+        "intent": "flight_search",
+        "status": "awaiting_flight_details"
+      },
+      "1": {
+        "intent": "flight_search",
+        "fields": {
+          "flight_request.origin": "Riyadh"
+        }
+      }
+    }
+  },
+  {
+    "id": "EN_FLIGHT_ORIGIN_MISSING",
+    "category": "missing_details",
+    "language": "en",
+    "turns": [
+      "Find a flight",
+      "Dammam"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Dammam"
+      }
+    },
+    "step_checks": {
+      "0": {
+        "intent": "flight_search",
+        "status": "awaiting_flight_details"
+      }
+    }
+  },
+  {
+    "id": "EN_FLIGHT_ROUTE_IN_ONE",
+    "category": "flight_extraction",
+    "language": "en",
+    "turns": [
+      "Find flights from Jeddah to Riyadh"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Jeddah",
+        "flight_request.destination": "Riyadh"
+      }
+    }
+  },
+  {
+    "id": "EN_FLIGHT_TWO_PASSENGERS",
+    "category": "flight_extraction",
+    "language": "en",
+    "turns": [
+      "Find flights from Riyadh to Jeddah on 2026-12-20 for 2 passengers"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "status": "flight_availability_checked",
+      "fields": {
+        "flight_request.passengers": 2
+      }
+    }
+  },
+  {
+    "id": "EN_FLIGHT_FOUR_PASSENGERS",
+    "category": "flight_extraction",
+    "language": "en",
+    "turns": [
+      "Find flights from Riyadh to Jeddah on 2026-12-20 for 4 passengers"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Riyadh",
+        "flight_request.destination": "Jeddah",
+        "flight_request.passengers": 4
+      }
+    }
+  },
+  {
+    "id": "EN_FLIGHT_DATE_AFTER_ROUTE",
+    "category": "flight_context",
+    "language": "en",
+    "turns": [
+      "Find a flight",
+      "Riyadh",
+      "Jeddah",
+      "2026-12-20"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Riyadh",
+        "flight_request.destination": "Jeddah",
+        "flight_request.departure_date": "2026-12-20"
+      }
+    }
+  },
+  {
+    "id": "EN_FLIGHT_PASSENGERS_FOLLOWUP",
+    "category": "flight_context",
+    "language": "en",
+    "turns": [
+      "Find a flight",
+      "Riyadh",
+      "Jeddah",
+      "2 passengers"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Riyadh",
+        "flight_request.destination": "Jeddah",
+        "flight_request.passengers": 2
+      }
+    }
+  },
+  {
+    "id": "EN_HOTEL_CITY_ONLY",
+    "category": "missing_details",
+    "language": "en",
+    "turns": [
+      "Find a hotel in Riyadh"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "fields": {
+        "hotel_request.destination": "Riyadh"
+      }
+    }
+  },
+  {
+    "id": "EN_HOTEL_FOUR_GUESTS",
+    "category": "hotel_extraction",
+    "language": "en",
+    "turns": [
+      "Find hotels in Riyadh, check-in 2026-12-10, check-out 2026-12-12, 4 guests, 2 rooms"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "status": "hotel_availability_checked",
+      "fields": {
+        "hotel_request.guests": 4,
+        "hotel_request.rooms": 2
+      }
+    }
+  },
+  {
+    "id": "EN_HOTEL_DAMMAM",
+    "category": "hotel_extraction",
+    "language": "en",
+    "turns": [
+      "Find hotels in Dammam, check-in 2026-12-10, check-out 2026-12-18, 4 guests, 1 room"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "fields": {
+        "hotel_request.destination": "Dammam",
+        "hotel_request.check_in_date": "2026-12-10",
+        "hotel_request.check_out_date": "2026-12-18",
+        "hotel_request.guests": 4,
+        "hotel_request.rooms": 1
+      }
+    }
+  },
+  {
+    "id": "EN_HOTEL_SHORT_DATES",
+    "category": "hotel_extraction",
+    "language": "en",
+    "turns": [
+      "Find hotels in Riyadh, check-in 2026-12-19, check-out 2026-12-27, 2 guests, 1 room"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "fields": {
+        "hotel_request.check_in_date": "2026-12-19",
+        "hotel_request.check_out_date": "2026-12-27"
+      }
+    }
+  },
+  {
+    "id": "EN_RESTAURANT_CITY_ONLY",
+    "category": "missing_details",
+    "language": "en",
+    "turns": [
+      "Find a restaurant in Riyadh"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.city": "Riyadh"
+      }
+    }
+  },
+  {
+    "id": "EN_RESTAURANT_JEDDAH",
+    "category": "restaurant_extraction",
+    "language": "en",
+    "turns": [
+      "Find restaurants in Jeddah on 2026-12-10 at 18:00 for 2 people"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.city": "Jeddah",
+        "restaurant_request.date": "2026-12-10",
+        "restaurant_request.time": "18:00",
+        "restaurant_request.party_size": 2
+      }
+    }
+  },
+  {
+    "id": "EN_RESTAURANT_KHOBAR",
+    "category": "restaurant_extraction",
+    "language": "en",
+    "turns": [
+      "Find restaurants in Al Khobar on 2026-12-10 at 18:00 for 2 people"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.city": "Al Khobar",
+        "restaurant_request.party_size": 2
+      }
+    }
+  },
+  {
+    "id": "EN_RESTAURANT_SIX",
+    "category": "restaurant_extraction",
+    "language": "en",
+    "turns": [
+      "Find restaurants in Riyadh on 2026-12-10 at 18:00 for 6 people"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.city": "Riyadh",
+        "restaurant_request.party_size": 6
+      }
+    }
+  },
+  {
+    "id": "EN_RESTAURANT_MISSING_DATE",
+    "category": "missing_details",
+    "language": "en",
+    "turns": [
+      "Find a restaurant",
+      "Riyadh"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.city": "Riyadh"
+      }
+    },
+    "step_checks": {
+      "0": {
+        "intent": "restaurant_search",
+        "status": "awaiting_restaurant_details"
+      }
+    }
+  },
+  {
+    "id": "EN_SWITCH_FLIGHT_RESTAURANT",
+    "category": "context_switch",
+    "language": "en",
+    "turns": [
+      "Find flights from Riyadh to Jeddah",
+      "Find a restaurant in Riyadh"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.city": "Riyadh"
+      }
+    }
+  },
+  {
+    "id": "EN_SWITCH_HOTEL_FLIGHT",
+    "category": "context_switch",
+    "language": "en",
+    "turns": [
+      "Find a hotel in Riyadh",
+      "Find a flight"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "status": "awaiting_flight_details"
+    }
+  },
+  {
+    "id": "EN_SWITCH_FLIGHT_HOTEL",
+    "category": "context_switch",
+    "language": "en",
+    "turns": [
+      "Find a flight",
+      "Find a hotel in Riyadh"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "fields": {
+        "hotel_request.destination": "Riyadh"
+      }
+    }
+  },
+  {
+    "id": "EN_SWITCH_RESTAURANT_HOTEL",
+    "category": "context_switch",
+    "language": "en",
+    "turns": [
+      "Find a restaurant in Riyadh",
+      "Find a hotel in Dammam"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "fields": {
+        "hotel_request.destination": "Dammam"
+      }
+    }
+  },
+  {
+    "id": "AR_FLIGHT_DIRECT",
+    "category": "arabic_flight",
+    "language": "ar",
+    "turns": [
+      "ابحث عن رحلات من الرياض إلى جدة بتاريخ 2026-12-20 لعدد 2 مسافرين"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Riyadh",
+        "flight_request.destination": "Jeddah",
+        "flight_request.departure_date": "2026-12-20",
+        "flight_request.passengers": 2
+      }
+    }
+  },
+  {
+    "id": "AR_FLIGHT_ROUTE",
+    "category": "arabic_flight",
+    "language": "ar",
+    "turns": [
+      "أريد رحلة من الرياض إلى جدة"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Riyadh",
+        "flight_request.destination": "Jeddah"
+      }
+    }
+  },
+  {
+    "id": "AR_HOTEL_DIRECT",
+    "category": "arabic_hotel",
+    "language": "ar",
+    "turns": [
+      "ابحث عن فنادق في الرياض من 2026-12-10 إلى 2026-12-12 لعدد 2 ضيوف و 1 غرف"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "fields": {
+        "hotel_request.destination": "Riyadh",
+        "hotel_request.check_in_date": "2026-12-10",
+        "hotel_request.check_out_date": "2026-12-12",
+        "hotel_request.guests": 2,
+        "hotel_request.rooms": 1
+      }
+    }
+  },
+  {
+    "id": "AR_RESTAURANT_DIRECT",
+    "category": "arabic_restaurant",
+    "language": "ar",
+    "turns": [
+      "ابحث عن مطاعم في الرياض بتاريخ 2026-12-10 الساعة 18:00 لعدد 2 أشخاص"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.city": "Riyadh",
+        "restaurant_request.date": "2026-12-10",
+        "restaurant_request.time": "18:00",
+        "restaurant_request.party_size": 2
+      }
+    }
+  },
+  {
+    "id": "AR_SERVICE_SWITCH",
+    "category": "arabic_context",
+    "language": "ar",
+    "turns": [
+      "ابحث عن مطاعم في الرياض",
+      "ابحث عن رحلات من الرياض إلى جدة"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Riyadh",
+        "flight_request.destination": "Jeddah"
+      }
+    }
+  },
+  {
+    "id": "V3_EN_FLIGHT_RESTART_ROUTE",
+    "category": "context_recovery",
+    "language": "en",
+    "turns": [
+      "Find flights from Riyadh to Jeddah",
+      "Find a flight from Dammam to Riyadh"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Dammam",
+        "flight_request.destination": "Riyadh"
+      }
+    }
+  },
+  {
+    "id": "V3_EN_FLIGHT_SHORT_DEST",
+    "category": "short_followups",
+    "language": "en",
+    "turns": [
+      "Find a flight",
+      "Riyadh",
+      "Jeddah"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Riyadh",
+        "flight_request.destination": "Jeddah"
+      }
+    },
+    "step_checks": {
+      "1": {
+        "fields": {
+          "flight_request.origin": "Riyadh"
+        }
+      }
+    }
+  },
+  {
+    "id": "V3_EN_FLIGHT_SWITCH_REOPEN",
+    "category": "context_recovery",
+    "language": "en",
+    "turns": [
+      "Find a flight from Riyadh to Jeddah",
+      "Find a restaurant in Dammam",
+      "Find flights from Dammam to Riyadh"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Dammam",
+        "flight_request.destination": "Riyadh"
+      }
+    }
+  },
+  {
+    "id": "V3_EN_HOTEL_NEW_CITY",
+    "category": "context_recovery",
+    "language": "en",
+    "turns": [
+      "Find a hotel in Riyadh",
+      "Find a hotel in Dammam"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "fields": {
+        "hotel_request.destination": "Dammam"
+      }
+    }
+  },
+  {
+    "id": "V3_EN_HOTEL_REOPEN_AFTER_FLIGHT",
+    "category": "context_recovery",
+    "language": "en",
+    "turns": [
+      "Find hotels in Riyadh",
+      "Find a flight",
+      "Find hotels in Dammam"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "fields": {
+        "hotel_request.destination": "Dammam"
+      }
+    }
+  },
+  {
+    "id": "V3_EN_RESTAURANT_NEW_CITY",
+    "category": "context_recovery",
+    "language": "en",
+    "turns": [
+      "Find a restaurant in Riyadh",
+      "Find a restaurant in Jeddah"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.city": "Jeddah"
+      }
+    }
+  },
+  {
+    "id": "V3_EN_RESTAURANT_CITY_KHOBAR",
+    "category": "context_recovery",
+    "language": "en",
+    "turns": [
+      "Find a restaurant in Riyadh",
+      "Find restaurants in Al Khobar"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.city": "Al Khobar"
+      }
+    }
+  },
+  {
+    "id": "V3_EN_FLIGHT_DIRECT_DEC_21",
+    "category": "date_robustness",
+    "language": "en",
+    "turns": [
+      "Find flights from Riyadh to Jeddah on 2026-12-21 for 1 passenger"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.departure_date": "2026-12-21",
+        "flight_request.passengers": 1
+      }
+    }
+  },
+  {
+    "id": "V3_EN_FLIGHT_DIRECT_DEC_20",
+    "category": "date_robustness",
+    "language": "en",
+    "turns": [
+      "Find flights from Riyadh to Jeddah on 20 Dec 2026 for 2 passengers"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.departure_date": "2026-12-20",
+        "flight_request.passengers": 2
+      }
+    }
+  },
+  {
+    "id": "V3_EN_HOTEL_DAY_BOUNDARY",
+    "category": "date_robustness",
+    "language": "en",
+    "turns": [
+      "Find hotels in Riyadh, check-in 2026-12-30, check-out 2027-01-02, 2 guests, 1 room"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "fields": {
+        "hotel_request.check_in_date": "2026-12-30",
+        "hotel_request.check_out_date": "2027-01-02"
+      }
+    }
+  },
+  {
+    "id": "V3_EN_RESTAURANT_24H",
+    "category": "time_robustness",
+    "language": "en",
+    "turns": [
+      "Find restaurants in Riyadh on 2026-12-12 at 20:00 for 4 people"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.date": "2026-12-12",
+        "restaurant_request.time": "20:00",
+        "restaurant_request.party_size": 4
+      }
+    }
+  },
+  {
+    "id": "V3_EN_RESTAURANT_TWO_PEOPLE",
+    "category": "quantity_robustness",
+    "language": "en",
+    "turns": [
+      "Find restaurants in Jeddah on 2026-12-11 at 18:00 for 2 people"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.party_size": 2,
+        "restaurant_request.city": "Jeddah"
+      }
+    }
+  },
+  {
+    "id": "V3_AR_HOTEL_RIYADH_CITY",
+    "category": "arabic_robustness",
+    "language": "ar",
+    "turns": [
+      "ابحث عن فندق في الرياض"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "fields": {
+        "hotel_request.destination": "Riyadh"
+      }
+    }
+  },
+  {
+    "id": "V3_AR_HOTEL_DAMMAM_CITY",
+    "category": "arabic_robustness",
+    "language": "ar",
+    "turns": [
+      "ابحث عن فنادق في الدمام"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "fields": {
+        "hotel_request.destination": "Dammam"
+      }
+    }
+  },
+  {
+    "id": "V3_AR_FLIGHT_JEDDAH_ROUTE",
+    "category": "arabic_robustness",
+    "language": "ar",
+    "turns": [
+      "ابحث عن رحلة من جدة إلى الرياض"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Jeddah",
+        "flight_request.destination": "Riyadh"
+      }
+    }
+  },
+  {
+    "id": "V3_AR_RESTAURANT_JEDDAH",
+    "category": "arabic_robustness",
+    "language": "ar",
+    "turns": [
+      "ابحث عن مطاعم في جدة"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.city": "Jeddah"
+      }
+    }
+  },
+  {
+    "id": "V3_AR_RESTAURANT_PARTY_4",
+    "category": "arabic_robustness",
+    "language": "ar",
+    "turns": [
+      "ابحث عن مطاعم في الرياض بتاريخ 2026-12-12 الساعة 18:00 لعدد 4 أشخاص"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.party_size": 4,
+        "restaurant_request.city": "Riyadh"
+      }
+    }
+  },
+  {
+    "id": "V3_AR_SWITCH_HOTEL_RESTAURANT",
+    "category": "arabic_context",
+    "language": "ar",
+    "turns": [
+      "ابحث عن فنادق في الرياض",
+      "ابحث عن مطاعم في جدة"
+    ],
+    "expected": {
+      "intent": "restaurant_search",
+      "fields": {
+        "restaurant_request.city": "Jeddah"
+      }
+    }
+  },
+  {
+    "id": "V3_AR_SWITCH_FLIGHT_HOTEL",
+    "category": "arabic_context",
+    "language": "ar",
+    "turns": [
+      "ابحث عن رحلات من الرياض إلى جدة",
+      "ابحث عن فنادق في الدمام"
+    ],
+    "expected": {
+      "intent": "hotel_search",
+      "fields": {
+        "hotel_request.destination": "Dammam"
+      }
+    }
+  },
+  {
+    "id": "V3_AR_SWITCH_RESTAURANT_FLIGHT",
+    "category": "arabic_context",
+    "language": "ar",
+    "turns": [
+      "ابحث عن مطاعم في الرياض",
+      "ابحث عن رحلات من جدة إلى الرياض"
+    ],
+    "expected": {
+      "intent": "flight_search",
+      "fields": {
+        "flight_request.origin": "Jeddah",
+        "flight_request.destination": "Riyadh"
+      }
+    }
+  }
+]

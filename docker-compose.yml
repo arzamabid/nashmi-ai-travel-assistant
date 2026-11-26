@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: nashmi-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nashmi
+      POSTGRES_USER: nashmi
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    ports:
+      - "5434:5432"
+    volumes:
+      - nashmi_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nashmi -d nashmi"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  nashmi_postgres_data:

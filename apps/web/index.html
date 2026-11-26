@@ -1,0 +1,1536 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NASHMI — AI Travel Concierge</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #09131d;
+      --panel: #101f2c;
+      --line: #253744;
+      --text: #f5f6f3;
+      --muted: #9bafb9;
+      --green: #a9e1ac;
+    }
+
+    .quick-actions{display:flex;gap:10px;flex-wrap:wrap;padding:14px 24px;border-bottom:1px solid var(--line);background:#0d1c29}
+    .quick-actions button{color:var(--text);border:1px solid #345044;border-radius:12px;padding:11px 16px;background:#192f3b}
+    .quick-actions button:hover{background:#24443e}
+    .restaurant-browse { display:grid; gap:10px; margin:12px 0; }
+    .restaurant-browse .restaurant-item { background:#182e39; padding:13px 15px; border:1px solid #345044; border-radius:12px; }
+    .restaurant-browse .restaurant-item strong { display:block; color:#eff8f0; }
+    .restaurant-browse .restaurant-item small { display:block; color:#9bafb9; margin-top:5px; }
+    .picker-city-select { padding:10px; min-width:145px; max-width:100%; background:#203543; color:white; border:1px solid #345044; border-radius:10px; }
+    .calendar-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(2, 9, 14, .8);
+      backdrop-filter: blur(12px);
+    }
+
+    .calendar-backdrop.open {
+      display: flex;
+    }
+
+    .calendar-modal {
+      width: min(100%, 560px);
+      max-height: 90dvh;
+      overflow-y: auto;
+      background: #122331;
+      border: 1px solid #345044;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 24px 100px rgba(0,0,0,.45);
+    }
+
+    .calendar-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: flex-start;
+    }
+
+    .calendar-top h2 {
+      margin: 8px 0;
+      font-size: 25px;
+    }
+
+    .calendar-route {
+      color: #a9e1ac;
+      font-size: 13px;
+    }
+
+    .calendar-close,
+    .calendar-nav button {
+      border: 1px solid #345044;
+      color: white;
+      background: #203543;
+      border-radius: 10px;
+      padding: 9px 13px;
+    }
+
+    .calendar-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 28px 0 20px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .calendar-weekday {
+      text-align: center;
+      color: #9bafb9;
+      font-size: 12px;
+      padding: 8px 0;
+    }
+
+    .calendar-day {
+      min-height: 62px;
+      border-radius: 12px;
+      border: 1px solid #293f49;
+      background: #182a37;
+      color: #697e89;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+
+    .calendar-day.available {
+      color: #10251b;
+      background: #b5e8b7;
+      border-color: #b5e8b7;
+      font-weight: 700;
+    }
+
+    .calendar-day.available:hover { filter: brightness(1.08); }
+    .flight-passenger-field { display:flex;align-items:center;gap:14px;margin-top:20px;color:var(--muted);font-size:13px; }
+    .flight-passenger-field input { width:94px;padding:10px 12px;background:#203543;color:white;border:1px solid #345044;border-radius:10px; }
+
+    .calendar-day:not(.available) {
+      cursor: not-allowed;
+    }
+
+    .calendar-day small {
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .calendar-hint {
+      font-size: 12px;
+      color: #9bafb9;
+      margin-top: 22px;
+      line-height: 1.6;
+    }
+
+    .calendar-trigger {
+      margin: 12px 0;
+      padding: 12px 18px;
+      border-radius: 12px;
+      background: #a9e1ac;
+      color: #10251b;
+      border: 0;
+      font-weight: 700;
+    }
+
+    @media (max-width: 600px) {
+      .calendar-modal { padding: 18px; }
+      .calendar-day { min-height: 52px; }
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+    button, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .app {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+    }
+    aside {
+      padding: 30px 22px;
+      border-right: 1px solid var(--line);
+      background: #0c1924;
+    }
+    .logo {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 3px;
+    }
+    .logo span { color: var(--green); }
+    .sidebar-copy {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .side-label {
+      margin-top: 48px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .side-item {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #192c38;
+      font-size: 14px;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+      min-width: 0;
+    }
+    header {
+      height: 78px;
+      padding: 0 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+    }
+    .subtitle { color: var(--muted); font-size: 13px; }
+    .lang {
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 16px;
+      color: var(--text);
+    }
+    .conversation {
+      flex: 1;
+      width: 100%;
+      max-width: 920px;
+      margin: auto;
+      padding: 35px 26px;
+      overflow-y: auto;
+    }
+    .welcome {
+      text-align: center;
+      margin: 45px auto;
+      max-width: 560px;
+    }
+    .eyebrow {
+      color: var(--green);
+      letter-spacing: 3px;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: clamp(34px, 5vw, 56px);
+      letter-spacing: -2px;
+      line-height: 1.12;
+      margin: 18px 0;
+    }
+    .welcome p {
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    .suggestions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 28px;
+    }
+    .suggestions button {
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: 12px 16px;
+    }
+    .message {
+      max-width: 85%;
+      padding: 15px 19px;
+      border-radius: 18px;
+      margin: 16px 0;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    .assistant {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      margin-right: auto;
+    }
+    .user {
+      background: #254c45;
+      margin-left: auto;
+    }
+    .results {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin: 16px 0 25px;
+    }
+    .result-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 19px;
+    }
+    .result-card h3 { margin: 8px 0; font-size: 16px; }
+    .result-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .result-card button, .confirm button {
+      background: var(--green);
+      color: #10251b;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 15px;
+      font-weight: 700;
+    }
+    .confirm {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    .confirm .cancel {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--text);
+    }
+    .composer-wrap {
+      padding: 20px 25px 28px;
+      border-top: 1px solid var(--line);
+      background: var(--bg);
+    }
+    .composer {
+      max-width: 870px;
+      margin: auto;
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      padding: 10px;
+      border-radius: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+    textarea {
+      flex: 1;
+      resize: none;
+      min-width: 0;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: white;
+      padding: 12px;
+      height: 52px;
+      max-height: 180px;
+    }
+    .send {
+      background: var(--green);
+      border: 0;
+      border-radius: 12px;
+      padding: 15px 20px;
+      color: #10251b;
+      font-weight: 700;
+    }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    button:hover:not(:disabled) { filter: brightness(1.1); }
+    [dir="rtl"] .assistant {
+      margin-right: 0;
+      margin-left: auto;
+    }
+    [dir="rtl"] .user {
+      margin-left: 0;
+      margin-right: auto;
+    }
+    [dir="rtl"] aside {
+      border-right: 0;
+      border-left: 1px solid var(--line);
+    }
+    @media(max-width: 750px) {
+      .app { grid-template-columns: 1fr; }
+      aside { display: none; }
+      header { padding: 0 18px; }
+      .conversation { padding: 20px 15px; }
+      .composer-wrap { padding: 12px; }
+      .message { max-width: 95%; }
+    }
+
+/* Hotel and restaurant availability pickers */
+.picker-settings{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 4px}
+.picker-settings label{display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:12px;flex:1;min-width:100px}
+.picker-settings input{min-width:0;width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:#1b3442;color:#fff}
+.picker-selection{padding:12px;border:1px solid #375747;border-radius:12px;margin-top:14px;color:var(--green);font-size:13px;min-height:42px}
+.slot-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.slot-list button{border:1px solid #4a7667;border-radius:10px;background:#28483f;color:#e2ffe7;padding:10px 14px}
+.slot-list button:hover{background:#3b6756}
+.calendar-day.selected{outline:3px solid #fff;outline-offset:1px}
+.calendar-day.available:focus-visible{outline:3px solid #fff}
+.picker-submit{margin-top:12px;padding:12px 16px;width:100%;border-radius:12px;border:0;background:var(--green);color:#10251b;font-weight:700}
+.picker-submit:disabled{opacity:.45}
+
+
+    .flight-route-fields {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+    .flight-route-fields label {display:flex;flex-direction:column;gap:7px;color:var(--muted);font-size:13px;min-width:0}
+    .flight-route-fields select {width:100%;padding:11px;background:#203543;color:#fff;border:1px solid #345044;border-radius:10px}
+    @media(max-width:440px){.flight-route-fields{grid-template-columns:1fr}}
+
+/* Persistent demo booking history */
+.booking-filter-bar {display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}
+.booking-filter-bar button {padding:9px 13px;border-radius:12px;background:#203543;color:#f5f6f3;border:1px solid #345044}
+.booking-filter-bar button.active {background:#a9e1ac;color:#10251b;font-weight:700}
+.booking-history-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.booking-history-card {padding:17px;border-radius:15px;border:1px solid #345044;background:#172b39;min-width:0}
+.booking-history-card h3 {font-size:17px;margin:9px 0}
+.booking-history-card p {margin:7px 0;color:#afc4cb;font-size:13px;overflow-wrap:anywhere}
+.booking-history-card .state {color:#a9e1ac;font-size:12px;font-weight:700}
+
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside>
+    <div class="logo">NASH<span>MI</span></div>
+    <div class="sidebar-copy">
+      Your intelligent Saudi travel concierge.
+    </div>
+    <div class="side-label">Workspace</div>
+    <div class="side-item">✦ Travel Assistant</div>
+    <div class="sidebar-copy" style="margin-top:35px">
+      Development demo · Simulated bookings only
+    </div>
+  </aside>
+
+  <main>
+    <div class="quick-actions" aria-label="Explore travel services">
+      <button type="button" onclick="openFlightPlanner()">✈ Flights</button>
+      <button type="button" onclick="openHotelPlanner()">◈ Hotels & stays</button>
+      <button type="button" onclick="openRestaurantPlanner()">◉ Restaurants & times</button>
+      <button type="button" onclick="openMyBookings()">▤ My Bookings</button>
+    </div>
+    <header>
+      <div>
+        <strong>NASHMI Concierge</strong>
+        <div class="subtitle" id="connection">
+          Connected to local API
+        </div>
+      </div>
+      <button class="lang" id="languageButton"
+              onclick="toggleLanguage()">العربية</button>
+    </header>
+
+    <div class="conversation" id="conversation">
+      <section class="welcome" id="welcome">
+        <div class="eyebrow">Your journey starts here</div>
+        <h1>Travel, intelligently.</h1>
+        <p>
+          Discover flights, exceptional stays, and restaurants
+          with your personal AI travel concierge.
+        </p>
+        <div class="suggestions">
+          <button onclick="useSuggestion('Find flights from Riyadh to Jeddah')">
+            ✈ Flights
+          </button>
+          <button onclick="useSuggestion('Find a hotel in Riyadh')">
+            ◈ Hotels
+          </button>
+          <button onclick="useSuggestion('Find a restaurant in Riyadh')">
+            ◉ Restaurants
+          </button>
+        </div>
+      </section>
+      <div id="messages" role="log" aria-live="polite"></div>
+    </div>
+
+    <div class="composer-wrap">
+      <form class="composer" id="chatForm">
+        <textarea id="messageInput"
+          placeholder="Ask NASHMI anything about your trip..."
+          aria-label="Message" required></textarea>
+        <button class="send" id="sendButton" type="submit">
+          Send
+        </button>
+      </form>
+    </div>
+  </main>
+</div>
+
+
+<!-- Flight availability modal: shown only when a flight route and passenger count are known -->
+<div class="calendar-backdrop" id="calendarBackdrop" aria-hidden="true">
+  <div class="calendar-modal" role="dialog" aria-modal="true"
+       aria-labelledby="calendarTitle">
+    <div class="calendar-top">
+      <div>
+        <div class="calendar-route" id="calendarRoute">Flight availability</div>
+        <h2 id="calendarTitle">Choose a departure date</h2>
+      </div>
+      <button class="calendar-close" id="calendarClose" type="button"
+              onclick="closeFlightCalendar()" aria-label="Close calendar">✕</button>
+    </div>
+    <div class="flight-route-fields">
+      <label><span id="flightOriginLabel">From</span><select id="flightOriginCity" aria-label="Departure city"></select></label>
+      <label><span id="flightDestinationLabel">To</span><select id="flightDestinationCity" aria-label="Arrival city"></select></label>
+    </div>
+    <label class="flight-passenger-field" for="flightPassengerCount">
+      <span id="flightPassengerLabel">Passengers</span>
+      <input id="flightPassengerCount" type="number" min="1" max="20" value="1" inputmode="numeric" />
+    </label>
+    <div class="calendar-nav">
+      <button type="button" onclick="changeCalendarMonth(-1)" aria-label="Previous month">‹</button>
+      <strong id="calendarMonth"></strong>
+      <button type="button" onclick="changeCalendarMonth(1)" aria-label="Next month">›</button>
+    </div>
+    <div class="calendar-grid" id="flightCalendarGrid" aria-label="Available flight dates"></div>
+    <p class="calendar-hint" id="calendarHint" role="status" aria-live="polite"></p>
+  </div>
+</div>
+
+
+<!-- Hotel / restaurant calendar: inventory is queried from PostgreSQL -->
+<div class="calendar-backdrop" id="otherPickerBackdrop" aria-hidden="true">
+  <div class="calendar-modal" role="dialog" aria-modal="true" aria-labelledby="otherPickerTitle">
+    <div class="calendar-top">
+      <div><div class="calendar-route" id="otherPickerRoute"></div><h2 id="otherPickerTitle"></h2></div>
+      <button class="calendar-close" type="button" id="otherPickerClose" onclick="closeOtherPicker()" aria-label="Close">✕</button>
+    </div>
+    <div class="picker-settings" id="otherPickerSettings"></div>
+    <div class="calendar-nav">
+      <button type="button" onclick="moveOtherPickerMonth(-1)" aria-label="Previous month">‹</button>
+      <strong id="otherPickerMonth"></strong>
+      <button type="button" onclick="moveOtherPickerMonth(1)" aria-label="Next month">›</button>
+    </div>
+    <div class="calendar-grid" id="otherPickerGrid"></div>
+    <div class="picker-selection" id="otherPickerSelection"></div>
+    <div class="slot-list" id="otherPickerSlots"></div>
+    <div id="restaurantBrowse" class="restaurant-browse"></div>
+    <button class="picker-submit" id="hotelStaySubmit" type="button" onclick="submitHotelStay()" hidden disabled></button>
+    <p class="calendar-hint" id="otherPickerHint" role="status" aria-live="polite"></p>
+  </div>
+</div>
+
+
+<!-- Confirmed booking history: local demo endpoint only. -->
+<div class="calendar-backdrop" id="bookingsBackdrop" aria-hidden="true">
+  <div class="calendar-modal" role="dialog" aria-modal="true" aria-labelledby="bookingsTitle">
+    <div class="calendar-top">
+      <div>
+        <div class="calendar-route">NASHMI · Saved reservations</div>
+        <h2 id="bookingsTitle">My Bookings</h2>
+      </div>
+      <button class="calendar-close" type="button" onclick="closeMyBookings()" aria-label="Close bookings">✕</button>
+    </div>
+    <div class="booking-filter-bar" id="bookingsFilters" aria-label="Filter bookings"></div>
+    <p id="bookingsStatus" class="calendar-hint" role="status" aria-live="polite"></p>
+    <div class="booking-history-grid" id="bookingsGrid"></div>
+  </div>
+</div>
+
+<script>
+  // Development-only identity.
+  // Production must use authenticated users.
+  const userId = "USER-001";
+  const sessionId = crypto.randomUUID();
+  let language = "en";
+  let busy = false;
+
+  const input = document.getElementById("messageInput");
+  const messages = document.getElementById("messages");
+  const conversation = document.getElementById("conversation");
+
+  function scrollBottom() {
+    conversation.scrollTop = conversation.scrollHeight;
+  }
+
+  function addMessage(content, sender) {
+    const element = document.createElement("div");
+    element.className = `message ${sender}`;
+    element.textContent = content;
+    messages.appendChild(element);
+    scrollBottom();
+  }
+
+  function useSuggestion(text) {
+    input.value = text;
+    input.focus();
+  }
+
+  function toggleLanguage() {
+    language = language === "en" ? "ar" : "en";
+    document.getElementById("app").dir =
+      language === "ar" ? "rtl" : "ltr";
+
+    document.documentElement.lang = language;
+    document.getElementById("languageButton").textContent =
+      language === "ar" ? "English" : "العربية";
+    document.getElementById("sendButton").textContent =
+      language === "ar" ? "إرسال" : "Send";
+
+    input.placeholder = language === "ar"
+      ? "كيف يمكن لناشمي مساعدتك في رحلتك؟"
+      : "Ask NASHMI anything about your trip...";
+  }
+
+  function renderResults(data) {
+    const options =
+      data.status === "flight_availability_checked"
+        ? data.available_flights
+        : data.status === "hotel_availability_checked"
+        ? data.available_hotels
+        : data.status === "restaurant_availability_checked"
+        ? data.available_restaurants
+        : [];
+
+    if (!options || !options.length) return;
+
+    const container = document.createElement("div");
+    container.className = "results";
+
+    options.forEach((item, index) => {
+      const name =
+        item.name || item.airline ||
+        item.hotel_id || item.restaurant_id ||
+        item.flight_id || "Travel option";
+
+      const card = document.createElement("div");
+      card.className = "result-card";
+
+      const heading = document.createElement("h3");
+      heading.textContent = `${index + 1}. ${name}`;
+      card.appendChild(heading);
+
+      const description = document.createElement("p");
+      description.textContent = [
+        item.flight_id || item.hotel_id || item.restaurant_id,
+        item.city || item.destination,
+        item.price_sar != null
+          ? `${item.price_sar} SAR`
+          : item.price_per_night != null
+          ? `${item.price_per_night} SAR / night`
+          : null,
+      ].filter(Boolean).join(" · ");
+
+      card.appendChild(description);
+
+      const button = document.createElement("button");
+      button.textContent =
+        language === "ar" ? "اختيار" : "Select";
+      button.onclick = () => sendMessage(`option ${index + 1}`);
+      card.appendChild(button);
+
+      container.appendChild(card);
+    });
+
+    messages.appendChild(container);
+    scrollBottom();
+  }
+
+  function renderConfirmation(data) {
+    if (data.status !== "awaiting_booking_confirmation") return;
+    if (!data.booking_preview_id) return;
+
+    const controls = document.createElement("div");
+    controls.className = "confirm";
+
+    const confirm = document.createElement("button");
+    confirm.textContent =
+      language === "ar" ? "تأكيد الحجز" : "Confirm booking";
+    confirm.onclick = () => sendMessage(
+      language === "ar"
+        ? "نعم، أكد الحجز"
+        : "Yes, confirm the booking"
+    );
+
+    const cancel = document.createElement("button");
+    cancel.className = "cancel";
+    cancel.textContent = language === "ar" ? "إلغاء" : "Cancel";
+    cancel.onclick = () => sendMessage(
+      language === "ar"
+        ? "لا، ألغِ الحجز"
+        : "No, cancel it"
+    );
+
+    controls.append(confirm, cancel);
+    messages.appendChild(controls);
+    scrollBottom();
+  }
+
+
+  // Calendar inventory is loaded from /flights/calendar, not generated by the LLM.
+  let flightContext = null;
+  let calendarYear = new Date().getFullYear();
+  let calendarMonth = new Date().getMonth();
+  let calendarRequestId = 0;
+
+  function flightRequestFromResponse(data) {
+    const request = data.flight_request || {};
+    const parsedPassengers = Number(request.passengers);
+    if (!request.origin || !request.destination) return null;
+    const passengers = Number.isInteger(parsedPassengers) &&
+      parsedPassengers >= 1 && parsedPassengers <= 20 ? parsedPassengers : 1;
+    return {
+      origin: request.origin,
+      destination: request.destination,
+      passengers,
+      departureDate: request.departure_date || null
+    };
+  }
+
+  function updateFlightRouteText() {
+    document.getElementById("calendarRoute").textContent =
+      `${flightContext?.origin || "—"} → ${flightContext?.destination || "—"} · ${flightContext?.passengers || 1} ` +
+      tr("passengers", "مسافرين");
+  }
+
+  async function populateFlightRoutes() {
+    const origin = document.getElementById("flightOriginCity");
+    const destination = document.getElementById("flightDestinationCity");
+    const hint = document.getElementById("calendarHint");
+    origin.replaceChildren(); destination.replaceChildren();
+    hint.textContent = tr("Loading available routes...", "جارٍ تحميل المسارات...");
+    const current = flightContext || {};
+    try {
+      const response = await fetch("/flights/routes");
+      if (!response.ok) throw new Error(`Routes API: HTTP ${response.status}`);
+      const payload = await response.json();
+      if (!document.getElementById("calendarBackdrop").classList.contains("open")) return;
+      if (!Array.isArray(payload.routes)) throw new Error("Unexpected routes response");
+      const routes = payload.routes.filter(r => r.origin && r.destination);
+      const origins = [...new Set(routes.map(r => r.origin))].sort();
+      const makeOption = (value) => {
+        const option = document.createElement("option");
+        option.value = value; option.textContent = value;
+        return option;
+      };
+      origins.forEach(city => origin.appendChild(makeOption(city)));
+      if (!origins.length) {
+        hint.textContent = tr("No demo flight routes are stored.", "لا توجد مسارات تجريبية مخزنة.");
+        return;
+      }
+      origin.value = origins.includes(current.origin) ? current.origin : origins[0];
+      const refreshDestinations = (preferred) => {
+        const choices = [...new Set(routes.filter(r => r.origin === origin.value).map(r => r.destination))].sort();
+        destination.replaceChildren();
+        choices.forEach(city => destination.appendChild(makeOption(city)));
+        destination.value = choices.includes(preferred) ? preferred : choices[0];
+        flightContext = {
+          ...flightContext, origin: origin.value, destination: destination.value,
+          passengers: flightContext?.passengers || 1, departureDate: null
+        };
+        updateFlightRouteText();
+        loadFlightCalendar();
+      };
+      origin.onchange = () => refreshDestinations(null);
+      destination.onchange = () => {
+        flightContext.destination = destination.value;
+        flightContext.departureDate = null;
+        updateFlightRouteText();
+        loadFlightCalendar();
+      };
+      refreshDestinations(current.destination);
+    } catch (error) {
+      console.error(error);
+      hint.textContent = tr("Could not load routes. Check that the new calendar API is installed.",
+        "تعذر تحميل المسارات. تحقق من واجهة التقويم.");
+    }
+  }
+
+  function openFlightCalendar() {
+    if (busy) return;
+    flightContext = flightContext || {origin:null, destination:null, passengers:1, departureDate:null};
+    const initialDate = flightContext.departureDate &&
+      /^\d{4}-\d{2}-\d{2}$/.test(flightContext.departureDate)
+      ? new Date(`${flightContext.departureDate}T12:00:00`) : new Date();
+    const baseDate = initialDate < new Date(new Date().toDateString()) ? new Date() : initialDate;
+    calendarYear = baseDate.getFullYear(); calendarMonth = baseDate.getMonth();
+    const backdrop = document.getElementById("calendarBackdrop");
+    backdrop.classList.add("open"); backdrop.setAttribute("aria-hidden", "false");
+    document.getElementById("calendarTitle").textContent = tr("Choose a departure date", "اختر تاريخ المغادرة");
+    document.getElementById("flightOriginLabel").textContent = tr("From", "من");
+    document.getElementById("flightDestinationLabel").textContent = tr("To", "إلى");
+    document.getElementById("flightPassengerLabel").textContent = tr("Passengers", "المسافرون");
+    document.getElementById("flightPassengerCount").value = String(flightContext.passengers || 1);
+    document.getElementById("calendarClose").focus();
+    populateFlightRoutes();
+  }
+
+  document.getElementById("flightPassengerCount").addEventListener("change", event => {
+    if (!flightContext) return;
+    const count = Number(event.target.value);
+    if (!Number.isInteger(count) || count < 1 || count > 20) {
+      event.target.value = String(flightContext.passengers);
+      return;
+    }
+    flightContext.passengers = count;
+    document.getElementById("calendarRoute").textContent =
+      `${flightContext.origin} → ${flightContext.destination} · ${count} ` +
+      (language === "ar" ? "مسافرين" : "passengers");
+    loadFlightCalendar();
+  });
+
+  function closeFlightCalendar() {
+    calendarRequestId++;
+    const backdrop = document.getElementById("calendarBackdrop");
+    backdrop.classList.remove("open");
+    backdrop.setAttribute("aria-hidden", "true");
+  }
+
+  function changeCalendarMonth(offset) {
+    const newMonth = new Date(calendarYear, calendarMonth + offset, 1);
+    calendarYear = newMonth.getFullYear();
+    calendarMonth = newMonth.getMonth();
+    loadFlightCalendar();
+  }
+
+  async function loadFlightCalendar() {
+    if (!flightContext?.origin || !flightContext?.destination) return;
+    const requestId = ++calendarRequestId;
+    const grid = document.getElementById("flightCalendarGrid");
+    const hint = document.getElementById("calendarHint");
+    grid.replaceChildren();
+    hint.textContent = language === "ar" ? "جارٍ تحميل الرحلات..." : "Loading flight availability...";
+    document.getElementById("calendarMonth").textContent =
+      new Date(calendarYear, calendarMonth, 1).toLocaleDateString(
+        language === "ar" ? "ar-SA" : "en-US", {month:"long", year:"numeric"}
+      );
+
+    const params = new URLSearchParams({
+      origin: flightContext.origin,
+      destination: flightContext.destination,
+      year: String(calendarYear),
+      month: String(calendarMonth + 1),
+      passengers: String(flightContext.passengers)
+    });
+    try {
+      const response = await fetch(`/flights/calendar?${params}`);
+      if (!response.ok) throw new Error(`Calendar API: HTTP ${response.status}`);
+      const data = await response.json();
+      if (requestId !== calendarRequestId) return;
+      if (!Array.isArray(data.days)) throw new Error("Invalid calendar API response");
+      const available = new Map(data.days.map(day => [day.date, day]));
+      const weekdays = language === "ar"
+        ? ["إث", "ثل", "أر", "خم", "جم", "سب", "أح"]
+        : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      for (const label of weekdays) {
+        const el = document.createElement("div");
+        el.className = "calendar-weekday";
+        el.textContent = label;
+        grid.appendChild(el);
+      }
+      const firstDay = (new Date(calendarYear, calendarMonth, 1).getDay() + 6) % 7;
+      for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement("div"));
+      const days = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+      const today = new Date();
+      const todayISO = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+      for (let day = 1; day <= days; day++) {
+        const date = `${calendarYear}-${String(calendarMonth + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+        const item = available.get(date);
+        const isAvailable = Boolean(item) && date >= todayISO;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = isAvailable ? "calendar-day available" : "calendar-day";
+        button.disabled = !isAvailable;
+        const number = document.createElement("span");
+        number.textContent = String(day);
+        button.appendChild(number);
+        if (isAvailable) {
+          const price = document.createElement("small");
+          price.textContent = `${item.starting_price} SAR`;
+          button.appendChild(price);
+          button.title = `${item.flight_count} flight(s) · from ${item.starting_price} SAR`;
+          button.onclick = () => selectFlightDate(date);
+        }
+        grid.appendChild(button);
+      }
+      const availableCount = data.days.filter(item => item.date >= todayISO).length;
+      hint.textContent = availableCount
+        ? (language === "ar"
+            ? "اختر تاريخًا أخضر لعرض الرحلات. الأسعار المعروضة ابتدائية."
+            : "Choose a green date to view flights. Displayed fares are starting prices.")
+        : (language === "ar"
+            ? "لا توجد رحلات مسجلة لهذا المسار في هذا الشهر. جرّب شهرًا آخر."
+            : "No matching flight inventory for this month. Try another month.");
+    } catch (error) {
+      if (requestId !== calendarRequestId) return;
+      hint.textContent = language === "ar"
+        ? "تعذر تحميل التقويم. تحقق من اتصال الخادم ثم أعد المحاولة."
+        : "Unable to load the calendar. Check the API and try again.";
+      console.error(error);
+    }
+  }
+
+  function selectFlightDate(date) {
+    if (busy || !flightContext?.origin || !flightContext?.destination) return;
+    const {origin, destination, passengers} = flightContext;
+    closeFlightCalendar();
+    const message = language === "ar"
+      ? `ابحث عن رحلات من ${origin} إلى ${destination} بتاريخ ${date} لعدد ${passengers} مسافرين`
+      : `Find flights from ${origin} to ${destination} on ${date} for ${passengers} passengers`;
+    // This still uses the chat extractor; next iteration can use structured selection.
+    sendMessage(message);
+  }
+
+  function renderCalendarTrigger(data) {
+    if (data.intent !== "flight_search" || !flightContext) return;
+    if (!["flight_availability_checked", "awaiting_flight_details"].includes(data.status)) return;
+    const button = document.createElement("button");
+    button.className = "calendar-trigger";
+    button.type = "button";
+    button.textContent = language === "ar" ? "📅 عرض أيام الرحلات المتاحة" : "📅 View available flight dates";
+    button.onclick = openFlightCalendar;
+    messages.appendChild(button);
+    scrollBottom();
+  }
+
+  document.getElementById("calendarBackdrop").addEventListener("click", event => {
+    if (event.target.id === "calendarBackdrop") closeFlightCalendar();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && document.getElementById("calendarBackdrop").classList.contains("open")) {
+      closeFlightCalendar();
+    }
+  });
+
+
+  let latestService = null;
+  let latestHotelRequest = {};
+  let latestRestaurantRequest = {};
+  let latestChatStatus = null;
+
+  function openFlightPlanner() {
+    latestService = "flight";
+    openFlightCalendar();
+  }
+  function openHotelPlanner() {
+    openOtherPicker("hotel", {
+      ...latestHotelRequest,
+      city: latestHotelRequest.destination || latestHotelRequest.city || ""
+    });
+  }
+  function openRestaurantPlanner() {
+    openOtherPicker("restaurant", {
+      ...latestRestaurantRequest,
+      city: latestRestaurantRequest.city || ""
+    });
+  }
+
+  // The same inventory-driven calendar for hotel stays and restaurant time slots.
+  let otherContext = null;
+  let otherMode = null;
+  let otherYear = new Date().getFullYear();
+  let otherMonth = new Date().getMonth();
+  let otherRequestId = 0;
+  let otherDays = new Map();
+  let checkIn = null;
+  let checkOut = null;
+  let restaurantDay = null;
+  let currentPickerButtons = [];
+
+  const tr = (english, arabic) => language === "ar" ? arabic : english;
+  function numberSetting(id, label, value, min, max) {
+    const container = document.createElement("label");
+    container.textContent = label;
+    const input = document.createElement("input");
+    input.type = "number"; input.id = id; input.min = min; input.max = max;
+    input.value = value;
+    input.addEventListener("change", () => {
+      const num = Number(input.value);
+      if (!Number.isInteger(num) || num < min || num > max) {
+        input.value = Math.max(min, Math.min(max, Number.isFinite(num) ? num : min));
+      }
+      if (otherMode === "hotel") { checkIn = null; checkOut = null; }
+      restaurantDay = null;
+      loadOtherPicker();
+    });
+    container.appendChild(input);
+    return container;
+  }
+
+  function openOtherPicker(mode, context) {
+    if (busy) return;
+    // Invalidate earlier calendar requests and clear the shared picker UI.
+    otherRequestId++;
+    for (const id of ["otherPickerGrid", "otherPickerSlots", "restaurantBrowse", "otherPickerSelection", "otherPickerHint"]) {
+      document.getElementById(id).replaceChildren();
+    }
+    otherDays = new Map();
+    otherMode = mode;
+    otherContext = {...context};
+    checkIn = null; checkOut = null; restaurantDay = null;
+    const today = new Date();
+    otherYear = today.getFullYear(); otherMonth = today.getMonth();
+    document.getElementById("otherPickerRoute").textContent = context.city || tr("Select a city", "اختر مدينة");
+    document.getElementById("otherPickerTitle").textContent = mode === "hotel"
+      ? tr("Choose your hotel stay", "اختر تواريخ الإقامة")
+      : tr("Choose a restaurant time", "اختر موعد المطعم");
+    const settings = document.getElementById("otherPickerSettings");
+    settings.replaceChildren();
+    document.getElementById("restaurantBrowse").replaceChildren();
+    if (mode === "hotel") {
+      const citySelect = document.createElement("select");
+      citySelect.id = "hotelCitySelect";
+      citySelect.className = "picker-city-select";
+      citySelect.setAttribute("aria-label", tr("Hotel city", "مدينة الفندق"));
+      const cityLabel = document.createElement("label");
+      cityLabel.textContent = tr("City ", "المدينة ");
+      cityLabel.appendChild(citySelect);
+      settings.append(cityLabel);
+      citySelect.addEventListener("change", () => {
+        otherContext.city = citySelect.value;
+        checkIn = null; checkOut = null;
+        document.getElementById("otherPickerRoute").textContent = otherContext.city || tr("Select a city", "اختر مدينة");
+        loadOtherPicker();
+      });
+      loadHotelCities(citySelect, context.city || "");
+      settings.append(
+        numberSetting("hotelPickerGuests", tr("Guests", "الضيوف"), context.guests || 2, 1, 30),
+        numberSetting("hotelPickerRooms", tr("Rooms", "الغرف"), context.rooms || 1, 1, 20)
+      );
+    } else {
+      const citySelect = document.createElement("select");
+      citySelect.id = "restaurantCitySelect";
+      citySelect.className = "picker-city-select";
+      citySelect.setAttribute("aria-label", tr("Restaurant city", "مدينة المطعم"));
+      const label = document.createElement("label");
+      label.textContent = tr("City ", "المدينة ");
+      label.appendChild(citySelect);
+      settings.append(label);
+      settings.append(numberSetting("restaurantPickerParty", tr("Party size", "عدد الأشخاص"), context.party_size || 2, 1, 30));
+      citySelect.addEventListener("change", () => {
+        otherContext.city = citySelect.value;
+        restaurantDay = null;
+        document.getElementById("otherPickerRoute").textContent = otherContext.city || tr("Select a city", "اختر مدينة");
+        loadOtherPicker();
+        loadRestaurantBrowse();
+      });
+      loadRestaurantCities(citySelect, context.city || "");
+    }
+    const submit = document.getElementById("hotelStaySubmit");
+    submit.hidden = mode !== "hotel";
+    submit.disabled = true;
+    submit.textContent = tr("Check this hotel stay", "تحقق من توفر الإقامة");
+    document.getElementById("otherPickerSlots").replaceChildren();
+    const backdrop = document.getElementById("otherPickerBackdrop");
+    backdrop.classList.add("open"); backdrop.setAttribute("aria-hidden", "false");
+    document.getElementById("otherPickerClose").focus();
+    if (mode === "hotel") loadOtherPicker();
+  }
+
+  async function loadHotelCities(select, preferredCity) {
+    const hint = document.getElementById("otherPickerHint");
+    try {
+      const response = await fetch("/hotels/cities");
+      if (!response.ok) throw new Error(`Hotel cities API: ${response.status}`);
+      const data = await response.json();
+      if (otherMode !== "hotel" || !document.getElementById("otherPickerBackdrop").classList.contains("open") ||
+          select !== document.getElementById("hotelCitySelect")) return;
+      const cities = data.cities || [];
+      select.replaceChildren();
+      const blank = document.createElement("option");
+      blank.value = "";
+      blank.textContent = tr("Choose a city", "اختر مدينة");
+      select.appendChild(blank);
+      cities.forEach(city => {
+        const option = document.createElement("option");
+        option.value = city;
+        option.textContent = city;
+        select.appendChild(option);
+      });
+      select.value = cities.find(c => c.toLowerCase() === preferredCity.toLowerCase()) || "";
+      otherContext.city = select.value;
+      document.getElementById("otherPickerRoute").textContent = select.value || tr("Select a city", "اختر مدينة");
+      loadOtherPicker();
+    } catch (error) {
+      hint.textContent = tr("Unable to load hotel cities. Check the API.", "تعذر تحميل مدن الفنادق.");
+      console.error(error);
+    }
+  }
+
+  async function loadRestaurantCities(select, preferredCity) {
+    try {
+      const response = await fetch("/restaurants/cities");
+      if (!response.ok) throw new Error(`City API ${response.status}`);
+      const payload = await response.json();
+      if (otherMode !== "restaurant" || !document.getElementById("otherPickerBackdrop").classList.contains("open") ||
+          select !== document.getElementById("restaurantCitySelect")) return;
+      const cities = payload.cities || [];
+      select.replaceChildren();
+      const empty = document.createElement("option");
+      empty.value = ""; empty.textContent = tr("Choose a city", "اختر مدينة");
+      select.appendChild(empty);
+      for (const city of cities) {
+        const option = document.createElement("option");
+        option.value = city; option.textContent = city;
+        select.appendChild(option);
+      }
+      const matched = cities.find(c => c.toLowerCase() === preferredCity.toLowerCase());
+      select.value = matched || "";
+      otherContext.city = select.value;
+      document.getElementById("otherPickerRoute").textContent = select.value || tr("Select a city", "اختر مدينة");
+      if (select.value) { loadOtherPicker(); loadRestaurantBrowse(); }
+      else { document.getElementById("otherPickerHint").textContent = tr("Choose a city to view restaurants and available times.", "اختر مدينة لعرض المطاعم والمواعيد المتاحة."); }
+    } catch (error) {
+      document.getElementById("otherPickerHint").textContent = tr("Could not load restaurant cities.", "تعذر تحميل مدن المطاعم.");
+      console.error(error);
+    }
+  }
+
+  async function loadRestaurantBrowse() {
+    const container = document.getElementById("restaurantBrowse");
+    container.replaceChildren();
+    if (otherMode !== "restaurant" || !otherContext?.city) return;
+    try {
+      const response = await fetch(`/restaurants/browse?${new URLSearchParams({city: otherContext.city})}`);
+      if (!response.ok) throw new Error(`Browse API ${response.status}`);
+      const data = await response.json();
+      if (otherMode !== "restaurant" || !document.getElementById("otherPickerBackdrop").classList.contains("open")) return;
+      const title = document.createElement("strong");
+      title.textContent = tr(`Restaurants in ${otherContext.city}`, `مطاعم ${otherContext.city}`);
+      container.appendChild(title);
+      if (!data.restaurants.length) {
+        const p = document.createElement("p"); p.textContent = tr("No demo restaurants are stored for this city.", "لا توجد مطاعم تجريبية مسجلة لهذه المدينة.");
+        container.appendChild(p);
+      }
+      for (const r of data.restaurants) {
+        const item = document.createElement("div"); item.className="restaurant-item";
+        const name = document.createElement("strong"); name.textContent=r.name; item.appendChild(name);
+        const desc = document.createElement("small");
+        desc.textContent=[r.cuisine, r.price_level, r.available_slot_count ? `${r.available_slot_count} ${tr("future slots","مواعيد مستقبلية")}` : tr("No future open slots", "لا توجد مواعيد متاحة")].filter(Boolean).join(" · ");
+        item.appendChild(desc);container.appendChild(item);
+      }
+    } catch (error) {
+      const p = document.createElement("p"); p.textContent=tr("Could not load restaurant list.","تعذر تحميل قائمة المطاعم.");container.appendChild(p);console.error(error);
+    }
+  }
+
+  function closeOtherPicker() {
+    // Reset selection and visible controls when closing or switching services.
+    // This does not change the confirmed booking state in PostgreSQL.
+    otherRequestId++;
+    const backdrop = document.getElementById("otherPickerBackdrop");
+    backdrop.classList.remove("open");
+    backdrop.setAttribute("aria-hidden", "true");
+    checkIn = null;
+    checkOut = null;
+    restaurantDay = null;
+    otherDays = new Map();
+    otherContext = null;
+    otherMode = null;
+    for (const id of [
+      "otherPickerGrid", "otherPickerSlots", "restaurantBrowse",
+      "otherPickerSelection", "otherPickerHint", "otherPickerSettings"
+    ]) {
+      document.getElementById(id).replaceChildren();
+    }
+    const submit = document.getElementById("hotelStaySubmit");
+    submit.disabled = true;
+    submit.hidden = true;
+  }
+
+  function moveOtherPickerMonth(offset) {
+    const next = new Date(otherYear, otherMonth + offset, 1);
+    otherYear = next.getFullYear(); otherMonth = next.getMonth();
+    loadOtherPicker();
+  }
+
+  function isoDate(year, month, day) {
+    return `${year}-${String(month + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+  }
+  function isoToday() {
+    const d = new Date(); return isoDate(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+  function updatePickerSelection(message) {
+    document.getElementById("otherPickerSelection").textContent = message;
+  }
+
+  async function loadOtherPicker() {
+    if (!otherContext || !otherMode) return;
+    if (!otherContext.city) {
+      document.getElementById("otherPickerGrid").replaceChildren();
+      document.getElementById("otherPickerSlots").replaceChildren();
+      document.getElementById("otherPickerHint").textContent = tr("Select a city first.","اختر مدينة أولاً.");
+      return;
+    }
+    const requestId = ++otherRequestId;
+    const hint = document.getElementById("otherPickerHint");
+    const grid = document.getElementById("otherPickerGrid");
+    grid.replaceChildren();
+    document.getElementById("otherPickerSlots").replaceChildren();
+    otherDays = new Map();
+    hint.textContent = tr("Loading available dates...", "جارٍ تحميل المواعيد...");
+    document.getElementById("otherPickerMonth").textContent =
+      new Date(otherYear, otherMonth, 1).toLocaleDateString(language === "ar" ? "ar-SA" : "en-US", {month:"long", year:"numeric"});
+    const params = new URLSearchParams({city:otherContext.city, year:otherYear, month:otherMonth+1});
+    if (otherMode === "hotel") params.set("rooms",document.getElementById("hotelPickerRooms").value);
+    else params.set("party_size",document.getElementById("restaurantPickerParty").value);
+    try {
+      const response = await fetch(`/${otherMode === "hotel" ? "hotels" : "restaurants"}/calendar?${params}`);
+      if (!response.ok) throw new Error(`Calendar API ${response.status}`);
+      const data = await response.json();
+      if (requestId !== otherRequestId) return;
+      if (!Array.isArray(data.days)) throw new Error("Invalid calendar response");
+      otherDays = new Map(data.days.map(x=>[x.date,x]));
+      const weekdays = language === "ar"
+        ? ["إث","ثل","أر","خم","جم","سب","أح"]
+        : ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+      for (const label of weekdays) {
+        const el = document.createElement("div"); el.className="calendar-weekday";
+        el.textContent=label;grid.appendChild(el);
+      }
+      const offset = (new Date(otherYear, otherMonth, 1).getDay()+6)%7;
+      for(let i=0;i<offset;i++) grid.appendChild(document.createElement("div"));
+      const count = new Date(otherYear,otherMonth+1,0).getDate();
+      for(let day=1;day<=count;day++) {
+        const date=isoDate(otherYear,otherMonth,day);
+        const item=otherDays.get(date);
+        const el=document.createElement("button");el.type="button";
+        el.dataset.date=date;
+        el.className=`calendar-day${item && date>=isoToday() ? " available" : ""}`;
+        const checkoutCandidate = otherMode === "hotel" && checkIn && !checkOut && date > checkIn &&
+          (new Date(`${date}T12:00:00`) - new Date(`${checkIn}T12:00:00`)) / 86400000 <= 30;
+        el.disabled=(!item && !checkoutCandidate) || date<isoToday();
+        const num=document.createElement("span");num.textContent=day;el.appendChild(num);
+        if (!el.disabled) {
+          if (otherMode==="hotel") {
+            if (item) { const price=document.createElement("small");price.textContent=`${item.starting_price} SAR`; el.appendChild(price); }
+          } else {
+            const slots=document.createElement("small");slots.textContent=`${item.slots.length} ${tr("times","أوقات")}`;
+            el.appendChild(slots);
+          }
+          el.onclick=()=>chooseOtherDate(date);
+        }
+        if (date===checkIn || date===checkOut || date===restaurantDay) el.classList.add("selected");
+        grid.appendChild(el);
+      }
+      hint.textContent = data.days.length ? (otherMode==="hotel"
+        ? tr("Green dates have room inventory for at least one hotel. Choose check-in, then checkout; the entire stay is verified before searching.",
+             "الأيام الخضراء بها غرف في فندق واحد على الأقل. اختر الوصول والمغادرة وسيتم التحقق من كامل الإقامة.")
+        : tr("Choose a green date to see actual open time slots.", "اختر يومًا أخضر لعرض الأوقات المتاحة."))
+        : tr("No matching inventory this month. Try a different month or number of guests/rooms.",
+             "لا تتوفر مواعيد لهذا الشهر. جرّب شهرًا أو عددًا آخر.");
+    } catch (error) {
+      if (requestId !== otherRequestId) return;
+      hint.textContent=tr("Couldn't load availability. Check that the calendar API is installed.",
+                          "تعذر تحميل المواعيد. تحقق من تشغيل واجهة التقويم البرمجية.");
+      console.error(error);
+    }
+    refreshOtherSelection();
+  }
+
+  function chooseOtherDate(date) {
+    if (otherMode === "hotel") {
+      if (!checkIn || checkOut || date <= checkIn) {checkIn=date;checkOut=null;}
+      else {checkOut=date;}
+      refreshOtherSelection();
+      // Refresh date buttons so checkout dates without a room-inventory row
+      // remain selectable (checkout itself is not a booked night).
+      loadOtherPicker();
+    } else {
+      restaurantDay = date;
+      refreshOtherSelection();
+    }
+  }
+
+  function refreshOtherSelection() {
+    if (otherMode === "hotel") {
+      updatePickerSelection(checkIn ? (checkOut
+        ? `${tr("Check-in","الوصول")}: ${checkIn}  ·  ${tr("Checkout","المغادرة")}: ${checkOut}`
+        : `${tr("Check-in","الوصول")}: ${checkIn} · ${tr("Now choose checkout","اختر تاريخ المغادرة")}`)
+        : tr("Select your check-in date", "اختر تاريخ الوصول"));
+      document.getElementById("hotelStaySubmit").disabled=!(checkIn && checkOut);
+      return;
+    }
+    updatePickerSelection(restaurantDay || tr("Select a date for available times", "اختر يومًا لعرض الأوقات"));
+    const slots=document.getElementById("otherPickerSlots");slots.replaceChildren();
+    if (!restaurantDay) return;
+    const day=otherDays.get(restaurantDay);
+    for (const slot of day?.slots || []) {
+      const btn=document.createElement("button");btn.type="button";
+      btn.textContent=`${slot.time} · ${slot.restaurant_count} ${tr("restaurant(s)","مطعم")}`;
+      btn.onclick=()=>submitRestaurantTime(restaurantDay,slot.time);
+      slots.appendChild(btn);
+    }
+  }
+
+  async function submitHotelStay() {
+    if (busy || !otherContext?.city || !checkIn || !checkOut) return;
+    const guests=Number(document.getElementById("hotelPickerGuests").value);
+    const rooms=Number(document.getElementById("hotelPickerRooms").value);
+    const params=new URLSearchParams({city:otherContext.city, check_in:checkIn,check_out:checkOut, rooms});
+    const hint=document.getElementById("otherPickerHint");
+    const submit=document.getElementById("hotelStaySubmit");
+    submit.disabled=true;
+    try {
+      const response=await fetch(`/hotels/stay-check?${params}`);
+      if (!response.ok) throw new Error(`Stay check HTTP ${response.status}`);
+      const data=await response.json();
+      if (!data.hotels?.length) {
+        hint.textContent=tr("No single hotel has enough rooms for every night of that stay. Try different dates or fewer rooms.",
+                            "لا يوجد فندق واحد يوفر عدد الغرف المطلوب في كل الليالي. اختر تواريخ أو غرفًا أقل.");
+        return;
+      }
+      const city=otherContext.city;
+      closeOtherPicker();
+      const message=language==="ar"
+        ? `ابحث عن فنادق في ${city} من ${checkIn} إلى ${checkOut} لعدد ${guests} ضيوف و ${rooms} غرف`
+        : `Find hotels in ${city}, check-in ${checkIn}, check-out ${checkOut}, ${guests} guests, ${rooms} rooms`;
+      sendMessage(message);
+    } catch (error) {
+      hint.textContent=tr("Unable to verify the full stay. Please retry.","تعذر التحقق من توفر الإقامة. حاول مجددًا.");
+      console.error(error);
+    } finally { submit.disabled=false; }
+  }
+
+  function submitRestaurantTime(date,time) {
+    if (busy || !otherContext) return;
+    const party=Number(document.getElementById("restaurantPickerParty").value);
+    const city=otherContext.city;
+    closeOtherPicker();
+    const message=language==="ar"
+      ? `ابحث عن مطاعم في ${city} بتاريخ ${date} الساعة ${time} لعدد ${party} أشخاص`
+      : `Find restaurants in ${city} on ${date} at ${time} for ${party} people`;
+    sendMessage(message);
+  }
+
+  function renderOtherCalendarTrigger(data) {
+    const hotel = data.intent === "hotel_search";
+    const restaurant = data.intent === "restaurant_search";
+    if (!hotel && !restaurant) return;
+    const request=hotel ? (data.hotel_request || {}) : (data.restaurant_request || {});
+    const city = hotel ? request.destination : request.city;
+    if (hotel && !["awaiting_hotel_details", "hotel_availability_checked"].includes(data.status)) return;
+    if (restaurant && !["awaiting_restaurant_details", "restaurant_availability_checked"].includes(data.status)) return;
+    if (hotel) latestHotelRequest = {...request};
+    if (restaurant) latestRestaurantRequest = {...request};
+    const trigger=document.createElement("button");trigger.className="calendar-trigger";trigger.type="button";
+    trigger.textContent=hotel
+      ? tr("📅 View available hotel dates", "📅 عرض تواريخ الفنادق المتاحة")
+      : tr("📅 View restaurant dates & times", "📅 عرض مواعيد المطاعم");
+    trigger.onclick=()=>openOtherPicker(hotel ? "hotel" : "restaurant", {...request,city: city || ""});
+    messages.appendChild(trigger);scrollBottom();
+  }
+
+  document.getElementById("otherPickerBackdrop").addEventListener("click",event=>{
+    if(event.target.id==="otherPickerBackdrop")closeOtherPicker();
+  });
+  document.addEventListener("keydown",event=>{
+    if(event.key==="Escape" && document.getElementById("otherPickerBackdrop").classList.contains("open"))closeOtherPicker();
+  });
+
+
+  // Persistent bookings are read from PostgreSQL through the local-only demo API.
+  let bookingHistory = [];
+  let bookingFilter = "all";
+  async function openMyBookings(filter = "all") {
+    const layer = document.getElementById("bookingsBackdrop");
+    layer.classList.add("open"); layer.setAttribute("aria-hidden", "false");
+    bookingFilter = filter;
+    document.getElementById("bookingsTitle").textContent = tr("My Bookings", "حجوزاتي");
+    document.getElementById("bookingsGrid").replaceChildren();
+    document.getElementById("bookingsStatus").textContent = tr("Loading your confirmed bookings...", "جارٍ تحميل الحجوزات المؤكدة...");
+    document.getElementById("bookingsFilters").replaceChildren();
+    try {
+      const response = await fetch("/bookings/history", {cache: "no-store"});
+      if (!response.ok) {
+        if (response.status === 403) throw new Error(tr("Local demo history is disabled. Enable it as described in README.md; production access requires login.", "سجل الحجوزات التجريبي معطل. يجب تفعيله محلياً، والوصول الإنتاجي يتطلب تسجيل الدخول."));
+        throw new Error(`Booking history API returned ${response.status}`);
+      }
+      const payload = await response.json();
+      bookingHistory = Array.isArray(payload.bookings) ? payload.bookings : [];
+      renderPersistentBookings();
+    } catch (error) {
+      document.getElementById("bookingsStatus").textContent = error.message;
+      console.error(error);
+    }
+  }
+  function closeMyBookings() {
+    const layer = document.getElementById("bookingsBackdrop");
+    layer.classList.remove("open");layer.setAttribute("aria-hidden", "true");
+  }
+  function renderPersistentBookings() {
+    const filters = document.getElementById("bookingsFilters");
+    filters.replaceChildren();
+    for (const [code,en,ar] of [["all","All","الكل"],["flight","Flights","رحلات"],["hotel","Hotels","فنادق"],["restaurant","Restaurants","مطاعم"]]) {
+      const button = document.createElement("button");
+      button.type = "button";button.textContent = tr(en, ar);
+      if (code === bookingFilter) button.classList.add("active");
+      button.onclick = () => { bookingFilter = code; renderPersistentBookings(); };
+      filters.appendChild(button);
+    }
+    const selected = bookingHistory.filter(b => bookingFilter === "all" || b.service_type === bookingFilter);
+    document.getElementById("bookingsStatus").textContent = tr(
+      `${selected.length} confirmed booking item(s) · Local development data`,
+      `${selected.length} حجوزات مؤكدة · بيانات تطوير محلية`);
+    const grid = document.getElementById("bookingsGrid");grid.replaceChildren();
+    if (!selected.length) {
+      const empty = document.createElement("p");empty.textContent = tr("No confirmed bookings in this category.", "لا توجد حجوزات مؤكدة في هذه الفئة.");grid.appendChild(empty);return;
+    }
+    for (const booking of selected) {
+      const card = document.createElement("article");card.className = "booking-history-card";
+      const state = document.createElement("div");state.className = "state";state.textContent = `✓ ${tr("Confirmed", "مؤكد")} · ${booking.service_type}`;card.appendChild(state);
+      const name = document.createElement("h3");name.textContent = booking.name || booking.item_id;card.appendChild(name);
+      const info = [booking.location, booking.item_id, booking.reference];
+      const details = booking.details || {};
+      if (booking.service_type === "hotel") info.push(`${details.check_in_date || "?"} → ${details.check_out_date || "?"}`,`${details.guests || "?"} guests · ${details.rooms || "?"} rooms`);
+      if (booking.service_type === "restaurant") info.push(`${details.date || "?"} · ${details.time || "?"}`,`${details.party_size || "?"} people`);
+      if (booking.service_type === "flight") info.push(`${booking.extra?.departure_date || "?"} · ${booking.extra?.departure_time || ""}`,`${details.passengers || "?"} passengers`);
+      for (const value of info.filter(Boolean)) {const line=document.createElement("p");line.textContent=String(value);card.appendChild(line);}
+      grid.appendChild(card);
+    }
+  }
+  document.getElementById("bookingsBackdrop").addEventListener("click", event => {if(event.target.id === "bookingsBackdrop")closeMyBookings();});
+  document.addEventListener("keydown",event=>{if(event.key === "Escape" && document.getElementById("bookingsBackdrop").classList.contains("open"))closeMyBookings();});
+
+  const confirmedThisSession = [];
+  let lastPreviewService = null;
+  let lastPreviewId = null;
+  let lastSelectedName = null;
+  function renderSessionBookings(serviceFilter = null) {
+    const matches = confirmedThisSession.filter(b => !serviceFilter || b.service === serviceFilter);
+    if (!matches.length) {
+      addMessage(tr("No matching confirmed bookings were recorded in this browser session. Booking history from earlier sessions is not yet available; it requires a persistent booking-history API.",
+        "لا توجد حجوزات مؤكدة مطابقة في جلسة المتصفح الحالية. عرض الحجوزات السابقة يحتاج واجهة سجل حجوزات دائمة."), "assistant");
+      return;
+    }
+    const lines = matches.map(b => `${b.service.toUpperCase()} · ${b.name || b.itemId || ""} · ${b.previewId} · ${b.reference || ""}`);
+    addMessage(tr("Confirmed demo bookings in this browser session (not a persistent booking record):",
+      "الحجوزات التجريبية المؤكدة في جلسة المتصفح الحالية (ليست سجلاً دائماً):") + "\n" + lines.join("\n"), "assistant");
+  }
+  async function sendMessage(message) {
+    if (busy || !message.trim()) return;
+    const cleanedMessage = message.trim().toLowerCase();
+    if (/\b(?:my|i booked|i confirmed|the one i booked|the one i confirmed)\b/.test(cleanedMessage) &&
+        /\b(?:bookings?|reservations?|confirmed|booked|restaurants?|hotels?|flights?)\b/.test(cleanedMessage) &&
+        !/\b(?:cancel|change|reschedule)\b/.test(cleanedMessage)) {
+      input.value = "";
+      addMessage(message, "user");
+      const serviceFilter = /restaurant/.test(cleanedMessage) ? "restaurant" :
+        /hotel/.test(cleanedMessage) ? "hotel" : /flight/.test(cleanedMessage) ? "flight" : null;
+      openMyBookings(serviceFilter || "all");
+      return;
+    }
+    if (/^(?:show (?:me )?(?:the )?(?:available )?(?:calendar|dates|times)|show me the available ones|which dates are available|show me the calender)$/.test(cleanedMessage)) {
+      input.value = "";
+      if (latestService === "hotel") openHotelPlanner();
+      else if (latestService === "restaurant") openRestaurantPlanner();
+      else if (latestService === "flight") openFlightPlanner();
+      else addMessage(tr("Choose Flights, Hotels, or Restaurants above to open the availability picker.", "اختر الرحلات أو الفنادق أو المطاعم لعرض المواعيد."), "assistant");
+      return;
+    }
+    // Contextual single-city reply after the hotel chatbot asks which city.
+    // Opening the picker is deterministic; it does not depend on the LLM interpreting a bare city.
+    const cityAnswer = {riyadh:"Riyadh",jeddah:"Jeddah",abha:"Abha",dammam:"Dammam",khobar:"Khobar",makkah:"Makkah",madinah:"Madinah", "الرياض":"Riyadh", "جدة":"Jeddah", "الدمام":"Dammam", "الخبر":"Khobar"}[cleanedMessage];
+    if (cityAnswer && latestService === "hotel" && latestChatStatus === "awaiting_hotel_details" && !latestHotelRequest.destination) {
+      latestHotelRequest = {...latestHotelRequest, destination:cityAnswer};
+      input.value = "";
+      addMessage(message, "user");
+      openHotelPlanner();
+      return;
+    }
+
+    busy = true;
+    document.getElementById("sendButton").disabled = true;
+
+    document.getElementById("welcome").style.display = "none";
+    addMessage(message, "user");
+    input.value = "";
+
+    try {
+      const response = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          user_id: userId,
+          session_id: sessionId,
+          message,
+          language,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API returned ${response.status}`);
+      }
+
+      const data = await response.json();
+      latestChatStatus = data.status;
+      if (["flight_search","hotel_search","restaurant_search"].includes(data.intent)) {
+        latestService = data.intent === "flight_search" ? "flight" : data.intent === "hotel_search" ? "hotel" : "restaurant";
+      }
+      if (data.intent === "hotel_search") latestHotelRequest = {...(data.hotel_request || {})};
+      if (data.intent === "restaurant_search") latestRestaurantRequest = {...(data.restaurant_request || {})};
+      if (data.intent === "flight_search") {
+        flightContext = flightRequestFromResponse(data);
+      } else if (["hotel_search", "restaurant_search"].includes(data.intent)) {
+        flightContext = null;
+      }
+
+      // Session-only UI history: does not claim bookings were saved to PostgreSQL.
+      if (data.status === "awaiting_booking_confirmation" && data.booking_preview_id) {
+        lastPreviewService = latestService;
+        lastPreviewId = data.booking_preview_id;
+        lastSelectedName = (data.response || "").match(/(?:hotel|restaurant|flight)\s+([A-Z]{3}-[A-Z0-9-]+)/i)?.[1] || null;
+      }
+      if (lastPreviewId && /(?:has been confirmed|تم تأكيد)/i.test(data.response || "")) {
+        confirmedThisSession.push({
+          service: lastPreviewService, previewId: lastPreviewId, itemId: lastSelectedName,
+          reference: (data.response || "").match(/Reference:\s*([\w-]+)/i)?.[1] || null
+        });
+        lastPreviewId = null;
+      }
+      if (lastPreviewId && /(?:has been cancelled|تم إلغاء)/i.test(data.response || "")) lastPreviewId = null;
+      addMessage(data.response || "Request completed.", "assistant");
+      renderResults(data);
+      renderConfirmation(data);
+      renderCalendarTrigger(data);
+      renderOtherCalendarTrigger(data);
+    } catch (error) {
+      addMessage(
+        language === "ar"
+          ? "تعذر الاتصال بالخادم. حاول مرة أخرى."
+          : "Unable to contact NASHMI. Please try again.",
+        "assistant"
+      );
+      input.value = message;
+    } finally {
+      busy = false;
+      document.getElementById("sendButton").disabled = false;
+      input.focus();
+    }
+  }
+
+  document.getElementById("chatForm")
+    .addEventListener("submit", event => {
+      event.preventDefault();
+      sendMessage(input.value);
+    });
+
+  input.addEventListener("keydown", event => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage(input.value);
+    }
+  });
+</script>
+</body>
+</html>
